@@ -20,10 +20,6 @@ on:
         required: false
         default: 'rocky9'
 
-env:
-  # we use this to get a (mostly) unique directory, therefore avoiding folder collisions when multiple workflows are running
-  BASE_DIR: '${{ github.sha }}-${{ github.run_id }}_${{ github.run_attempt }}'
-
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
   contents: 'read'
@@ -63,20 +59,20 @@ jobs:
       - name: 'Checkout the monitoring-plugins repo'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:
-          path: '${{ env.BASE_DIR }}/repos/monitoring-plugins'
+          path: 'repos/monitoring-plugins'
 
       - name: 'Checkout the lib repo'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:
           repository: 'Linuxfabrik/lib'
           ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
-          path: '${{ env.BASE_DIR }}/repos/lib'
+          path: 'repos/lib'
 
-      - name: 'mkdir -p ${{ env.BASE_DIR }}/build'
-        run: 'mkdir -p ${{ env.BASE_DIR }}/build'
+      - name: 'mkdir -p build'
+        run: 'mkdir -p build'
 
-      - name: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
-        run: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
+      - name: 'mkdir -p build/${{ matrix.distro }}'
+        run: 'mkdir -p build/${{ matrix.distro }}'
 
       - name: 'Synchronize cached writes to persistent storage'
         run: 'sync'
@@ -89,15 +85,15 @@ jobs:
       - name: 'Build the container for ${{ matrix.distro }}'
         run: >
           podman build
-          --file "${{ env.BASE_DIR }}/repos/monitoring-plugins/build/${{ matrix.distro }}/Containerfile"
+          --file "repos/monitoring-plugins/build/${{ matrix.distro }}/Containerfile"
           --tag "lfmp-build-${{ matrix.distro }}"
 
       - name: 'Build the packages for ${{ matrix.distro }}'
         run: >
           podman run
           --rm
-          --mount type=bind,source=${{ env.BASE_DIR }}/build/${{ matrix.distro }},destination=/build,relabel=private
-          --mount type=bind,source=${{ env.BASE_DIR }}/repos,destination=/repos,relabel=shared,ro=true
+          --mount type=bind,source=build/${{ matrix.distro }},destination=/build,relabel=private
+          --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash -x
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
@@ -105,19 +101,8 @@ jobs:
           ${{ inputs.package-iteration || '1' }}
           ${{ inputs.check-plugin || '' }}
 
-
-  # this would not work on the Github-hosted runners, as each job is isolated there,
-  # but works when self-hosted (since there are no parallel jobs)
-  upload-outputs:
-    runs-on:
-      - 'ubuntu-24.04'
-    needs: # we want this to run after the build jobs
-      - 'build-packages'
-    # if: '${{ always() }}' # however, we want to upload the artifacts even if one of the job fails
-
-    steps:
       - name: 'Upload build output as artifact for packaging later on'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
-          name: "monitoring-plugins-linux-${{ inputs.arch || 'X64' }}"
-          path: '${{ env.BASE_DIR }}/build/'
+          path: 'build/'
+          name: 'monitoring-plugins-linux-x86_64.zip'
