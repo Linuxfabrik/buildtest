@@ -37,11 +37,21 @@ jobs:
           name: version
           path: .
 
+      - name: 'Check if Version Artifact Exists'
+        id: check_version_file
+        run: |
+          if [[ -s "version.txt" ]]; then
+            echo "Previous version artifact found."
+          else
+            echo "No previous version artifact found, initializing to 1.0.0.0"
+            echo "1.0.0.0" > version.txt
+          fi
+
       - name: 'Extract Previous Version from Artifact'
         id: extract_version
         run: |
-          if [[ -s "version/version.txt" ]]; then
-            PREVIOUS_VERSION=$(cat version/version.txt)
+          if [[ -s "version.txt" ]]; then
+            PREVIOUS_VERSION=$(cat version.txt)
             echo "Previous version found: $PREVIOUS_VERSION"
           else
             PREVIOUS_VERSION="1.0.0.0"
