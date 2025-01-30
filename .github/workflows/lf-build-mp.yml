@@ -51,9 +51,22 @@ permissions:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  debug:
+  debug-linux-x86_64:
     runs-on:
       - 'ubuntu-24.04'
+    steps:
+      - name: 'Debug Environment and Inputs'
+        run: >
+          echo
+          BASE_DIR=${{ env.BASE_DIR }}
+          arch=${{ inputs.arch }}
+          check-plugin=${{ inputs.check-plugin }}
+          distros=${{ inputs.distros }}
+          lib-repo-ref=${{ inputs.lib-repo-ref }}
+          package-iteration=${{ inputs.package-iteration }}
+
+  debug-linux-aarch64:
+    runs-on:
       - 'ubuntu-24.04-arm'
     steps:
       - name: 'Debug Environment and Inputs'
@@ -65,6 +78,22 @@ jobs:
           distros=${{ inputs.distros }}
           lib-repo-ref=${{ inputs.lib-repo-ref }}
           package-iteration=${{ inputs.package-iteration }}
+
+  debug-windows:
+    runs-on:
+      - 'windows-2025'
+    steps:
+      - name: 'Debug Environment and Inputs'
+        shell: 'bash'
+        run: >
+          echo
+          BASE_DIR=${{ env.BASE_DIR }}
+          arch=${{ inputs.arch }}
+          check-plugin=${{ inputs.check-plugin }}
+          distros=${{ inputs.distros }}
+          lib-repo-ref=${{ inputs.lib-repo-ref }}
+          package-iteration=${{ inputs.package-iteration }}
+
 
   # set-matrix:
   #   runs-on:
