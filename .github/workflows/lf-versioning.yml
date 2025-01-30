@@ -9,9 +9,9 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.next_version }}
+      version: ${{ steps.version.outputs.new_version }}
       new_release: ${{ steps.version.outputs.new_release }}
-    
+
     steps:
       - name: "Checkout Repository"
         uses: actions/checkout@v4
@@ -19,46 +19,70 @@ jobs:
           fetch-depth: 0  # Required for full commit history
           token: ${{ secrets.GH_TOKEN_CUSTOM }}  # ✅ Use custom GH_TOKEN
 
-      - name: "Set up Node.js"
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: "Install Dependencies"
-        run: npm install -g semantic-release @semantic-release/git @semantic-release/changelog
-
-      - name: "Determine Next Version"
-        id: version
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_CUSTOM }}  # ✅ Use custom GH_TOKEN
+      - name: "Check if Latest Commit is Tagged"
+        id: check_commit_tag
         run: |
-          NEXT_VERSION=$(npx semantic-release --dry-run | grep "nextRelease.version" | awk -F'"' '{print $4}')
-          if [ -z "$NEXT_VERSION" ]; then
-            echo "new_release=false" >> $GITHUB_ENV
+          TAG=$(git tag --points-at HEAD)
+          if [[ -n "$TAG" ]]; then
+            echo "latest_commit_tag=$TAG" >> $GITHUB_ENV
+            echo "tagged=true" >> $GITHUB_ENV
           else
-            echo "next_version=$NEXT_VERSION" >> $GITHUB_ENV
-            echo "$NEXT_VERSION" > version.txt
-            echo "new_release=true" >> $GITHUB_ENV
+            echo "latest_commit_tag=" >> $GITHUB_ENV
+            echo "tagged=false" >> $GITHUB_ENV
           fi
 
-      - name: "Commit and Push Version File"
-        if: env.new_release == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_CUSTOM }}  # ✅ Use custom GH_TOKEN
+      - name: "Read and Increment Version if No Tag"
+        id: version_update
+        run: |
+          VERSION_FILE="version.txt"
+
+          if [[ "${{ env.tagged }}" == "true" ]]; then
+            # If latest commit is tagged, use that tag
+            NEW_VERSION="${{ env.latest_commit_tag }}"
+          else
+            # No tag → Read version from file and bump revision using Python
+            NEW_VERSION=$(python3 <<EOF
+            import sys
+            try:
+                with open("$VERSION_FILE", "r") as f:
+                    version = f.read().strip()
+            except FileNotFoundError:
+                version = "1.0.0"
+
+            parts = version.split(".")
+            while len(parts) < 4:
+                parts.append("0")  # Ensure at least major.minor.patch.revision
+
+            parts[3] = str(int(parts[3]) + 1)  # Increment revision
+            new_version = ".".join(parts)
+
+            with open("$VERSION_FILE", "w") as f:
+                f.write(new_version)
+
+            print(new_version)
+            EOF
+            )
+            echo "$NEW_VERSION" > "$VERSION_FILE"
+            echo "version_updated=true" >> $GITHUB_ENV
+          fi
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+          echo "New version: $NEW_VERSION"
+
+      - name: "Commit and Push Version Change if Updated"
+        if: env.version_updated == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add version.txt
-          git commit -m "chore(version): bump to ${{ env.next_version }}"
-          git push origin main  # ✅ Push using custom GH_TOKEN
+          git commit -m "chore(workflow): bump version to ${{ env.new_version }}"
+          git push origin main
 
       - name: "Create Git Tag for Release"
-        if: env.new_release == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_CUSTOM }}  # ✅ Use custom GH_TOKEN
+        if: env.version_updated == 'true'
         run: |
-          git tag "v${{ env.next_version }}"
-          git push origin "v${{ env.next_version }}"  # ✅ Push using custom GH_TOKEN
+          git tag "v${{ env.new_version }}"
+          git push origin "v${{ env.new_version }}"
 
       - name: "Upload Version File as Artifact"
         uses: actions/upload-artifact@v4
