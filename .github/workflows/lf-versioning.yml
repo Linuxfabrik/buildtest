@@ -122,7 +122,6 @@ jobs:
           EOF
 
       - name: 'Run Version Bump Script'
-        id: version_update
         run: |
           NEW_VERSION=$(python3 bump_version.py)
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
