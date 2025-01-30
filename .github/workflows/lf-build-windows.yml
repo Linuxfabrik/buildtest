@@ -1,0 +1,27 @@
+name: "LF Build Windows"
+
+on:
+  workflow_dispatch:
+    inputs:
+      package-version:
+        required: false
+      lib-repo-ref:
+        required: false
+      distros:
+        required: false
+      check-plugin:
+        required: false
+      arch:
+        required: false
+
+jobs:
+  build-windows:
+    runs-on: windows-2025
+    steps:
+      - name: Print Inputs
+        run: |
+          echo "package-version: ${{ inputs.package-version }}"
+          echo "lib-repo-ref: ${{ inputs.lib-repo-ref }}"
+          echo "distros: ${{ inputs.distros }}"
+          echo "check-plugin: ${{ inputs.check-plugin }}"
+          echo "arch: ${{ inputs.arch }}"
