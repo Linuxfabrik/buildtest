@@ -38,4 +38,4 @@ jobs:
       - name: 'create list of windows checks'
         shell: 'bash'
         run: |
-          /repos/buildtest/build/shared/test.sh
+          buildtest/build/shared/test.sh
