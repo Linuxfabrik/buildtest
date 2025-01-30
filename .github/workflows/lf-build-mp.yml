@@ -54,10 +54,9 @@ jobs:
   debug:
     runs-on:
       - 'ubuntu-24.04'
-      - 'ubuntu-24.04-arm'
-      - 'windows-2025'
     steps:
       - name: 'Debug Environment and Inputs'
+        shell: 'bash'
         run: >
           echo
           BASE_DIR=${{ env.BASE_DIR }}
@@ -67,69 +66,43 @@ jobs:
           lib-repo-ref=${{ inputs.lib-repo-ref }}
           package-iteration=${{ inputs.package-iteration }}
 
-  # debug-linux-aarch64:
-  #   runs-on:
-  #   steps:
-  #     - name: 'Debug Environment and Inputs'
-  #       run: >
-  #         echo
-  #         BASE_DIR=${{ env.BASE_DIR }}
-  #         arch=${{ inputs.arch }}
-  #         check-plugin=${{ inputs.check-plugin }}
-  #         distros=${{ inputs.distros }}
-  #         lib-repo-ref=${{ inputs.lib-repo-ref }}
-  #         package-iteration=${{ inputs.package-iteration }}
+  set-matrix:
+    runs-on:
+      - 'ubuntu-24.04'
+      - 'ubuntu-24.04-arm'
+    outputs:
+      matrix: '${{ steps.generate-matrix.outputs.matrix }}'
+    steps:
+      - name: 'Generate Matrix'
+        id: 'generate-matrix'
+        run: |
+          distros="${{ inputs.distros }}"
+          matrix=$(echo "$distros" | jq --compact-output --raw-input '{"distros": split(",")}')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
-  # debug-windows:
-  #   runs-on:
-  #   steps:
-  #     - name: 'Debug Environment and Inputs'
-  #       shell: 'bash'
-  #       run: >
-  #         echo
-  #         BASE_DIR=${{ env.BASE_DIR }}
-  #         arch=${{ inputs.arch }}
-  #         check-plugin=${{ inputs.check-plugin }}
-  #         distros=${{ inputs.distros }}
-  #         lib-repo-ref=${{ inputs.lib-repo-ref }}
-  #         package-iteration=${{ inputs.package-iteration }}
+  git-checkout:
+    runs-on:
+      - 'ubuntu-24.04'
+      - 'ubuntu-24.04-arm'
+      - 'windows-2025'
+    steps:
+      - name: 'git checkout https://github.com/Linuxfabrik/monitoring-plugins.git'
+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
+        with:
+          path: '${{ env.BASE_DIR }}/repos/monitoring-plugins'
 
-
-  # set-matrix:
-  #   runs-on:
-  #     - 'ubuntu-24.04'
-  #     - 'ubuntu-24.04-arm'
-  #   outputs:
-  #     matrix: '${{ steps.generate-matrix.outputs.matrix }}'
-  #   steps:
-  #     - name: 'Generate Matrix'
-  #       id: 'generate-matrix'
-  #       run: |
-  #         distros="${{ inputs.distros }}"
-  #         matrix=$(echo "$distros" | jq --compact-output --raw-input '{"distros": split(",")}')
-  #         echo "matrix=$matrix" >> $GITHUB_OUTPUT
+      - name: 'git checkout https://github.com/Linuxfabrik/lib.git'
+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
+        with:
+          repository: 'Linuxfabrik/lib'
+          ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
+          path: '${{ env.BASE_DIR }}/repos/lib'
 
   # linux-preparations:
   #   runs-on:
   #     - 'ubuntu-24.04'
   #     - 'ubuntu-24.04-arm'
   #   steps:
-  #     - name: 'Harden Runner'
-  #       uses: 'step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e' # v2.10.4
-  #       with:
-  #         egress-policy: 'audit'
-
-  #     - name: 'git checkout https://github.com/Linuxfabrik/monitoring-plugins.git'
-  #       uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
-  #       with:
-  #         path: '${{ env.BASE_DIR }}/repos/monitoring-plugins'
-
-  #     - name: 'git checkout https://github.com/Linuxfabrik/lib.git'
-  #       uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
-  #       with:
-  #         repository: 'Linuxfabrik/lib'
-  #         ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
-  #         path: '${{ env.BASE_DIR }}/repos/lib'
 
   #     - name: 'mkdir -p ${{ env.BASE_DIR }}/build'
   #       run: 'mkdir -p ${{ env.BASE_DIR }}/build'
