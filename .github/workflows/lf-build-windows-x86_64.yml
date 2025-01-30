@@ -16,26 +16,91 @@ on:
         required: false
         default: 'cpu-usage'
 
+env:
+  # we use this to get a (mostly) unique directory, therefore avoiding folder collisions when multiple workflows are running
+  BASE_DIR: '${{ github.sha }}-${{ github.run_id }}_${{ github.run_attempt }}'
 
+# modify the default permissions granted to the GITHUB_TOKEN
+permissions:
+  contents: 'read'
 
-
-
-
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-windows:
+  set-matrix:
+    runs-on:
+      - 'windows-2025'
+    outputs:
+      matrix: '${{ steps.generate-matrix.outputs.matrix }}'
+    steps:
+      - name: 'Generate Matrix'
+        id: 'generate-matrix'
+        run: |
+          distros="${{ inputs.distros }}"
+          matrix=$(echo "$distros" | jq --compact-output --raw-input '{"distros": split(",")}')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  preparations:
     runs-on:
       - 'windows-2025'
     steps:
-      - name: 'Print Inputs'
-        run: |
-          echo "package-version: ${{ inputs.package-version }}"
-          echo "lib-repo-ref: ${{ inputs.lib-repo-ref }}"
-          echo "check-plugin: ${{ inputs.check-plugin }}"
+      - name: 'Debug Environment and Inputs'
+        run: >
+          echo
+          check-plugin=${{ inputs.check-plugin }}
+          lib-repo-ref=${{ inputs.lib-repo-ref }}
+          package-iteration=${{ inputs.package-iteration }}
 
-      - name: 'git clone https://github.com/Linuxfabrik/buildtest.git'
+
+      - name: 'Checkout the monitoring-plugins repo'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
+        with:
+          path: '${{ env.BASE_DIR }}/repos/monitoring-plugins'
 
-      - name: 'create list of windows checks'
+      - name: 'Checkout the lib repo'
+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
+        with:
+          repository: 'Linuxfabrik/lib'
+          ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
+          path: '${{ env.BASE_DIR }}/repos/lib'
+
+      - name: 'mkdir -p ${{ env.BASE_DIR }}/build'
+        run: 'mkdir -p ${{ env.BASE_DIR }}/build'
+
+  build-packages:
+    runs-on:
+      - 'windows-2025'
+    needs:
+      - 'set-matrix'
+      - 'preparations'
+    strategy:
+      matrix:
+        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
+    steps:
+      - name: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
+        run: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
+
+      - name: 'Build the packages for ${{ matrix.distro }}'
         shell: 'bash'
-        run: |
-          build/shared/test.sh
+        run: >
+          /bin/bash -x
+          /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
+          ${{ inputs.package-version || github.ref_name }}
+          ${{ inputs.package-iteration || '1' }}
+          ${{ inputs.check-plugin || '' }}
+
+
+  # this would not work on the Github-hosted runners, as each job is isolated there,
+  # but works when self-hosted (since there are no parallel jobs)
+  upload-outputs:
+    runs-on:
+      - 'windows-2025'
+    needs: # we want this to run after the build jobs
+      - 'build-packages'
+    # if: '${{ always() }}' # however, we want to upload the artifacts even if one of the job fails
+
+    steps:
+      - name: 'Upload build output as artifact for packaging later on'
+        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+        with:
+          name: "monitoring-plugins-linux-${{ inputs.arch || 'X64' }}"
+          path: '${{ env.BASE_DIR }}/build/'

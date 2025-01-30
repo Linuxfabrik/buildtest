@@ -16,6 +16,9 @@ get_vendor() {
     debian|ubuntu|mint)
         vendor="Debian"
         ;;
+    windows)
+        vendor="Windows"
+        ;;
     *)
         vendor="other"
         ;;
@@ -23,7 +26,8 @@ get_vendor() {
     echo "$vendor"
 }
 
-compile_plugins() {
+compile_check_plugins() {
+    # Works on both Linux and Windows
     MONITORING_PLUGINS_DIR="$1"
     if [[ -z "$MONITORING_PLUGINS_DIR" ]]; then
         echo "Usage: ${FUNCNAME[0]} <MONITORING_PLUGINS_DIR> [<CHECK_PLUGIN>]"
@@ -38,39 +42,38 @@ compile_plugins() {
 
     for dir in "$MONITORING_PLUGINS_DIR"/check-plugins/$CHECK_PLUGIN; do
         check="$(basename "$dir")"
-        if [ "$check" != "example" ]; then
-            echo -e "\ncompiling $check..."
-            nuitka \
-                --assume-yes-for-downloads \
-                --output-dir=/tmp/output/check-plugins/ \
-                --remove-output \
-                --standalone \
-                "$dir/$check"
-            # remove ".bin" suffix
-            mv "/tmp/output/check-plugins/$check.dist/$check.bin" "/tmp/output/check-plugins/$check.dist/$check"
+        if [ "$check" == "example" ]; then
+            continue
         fi
+        echo -e "\ncompiling $check..."
+        python -m nuitka \
+            --assume-yes-for-downloads \
+            --output-dir=/tmp/output/check-plugins/ \
+            --remove-output \
+            --standalone \
+            "$dir/$check"
+        # remove ".bin" suffix
+        mv "/tmp/output/check-plugins/$check.dist/$check.bin" "/tmp/output/check-plugins/$check.dist/$check"
     done
     \cp --archive --no-clobber /tmp/output/check-plugins/*.dist/* /tmp/output/summary/check-plugins
+}
 
-    if [ "$CHECK_PLUGIN" == "*" ]; then
-        # only build notification plugins if all check plugins should be built
-        for dir in "$MONITORING_PLUGINS_DIR"/notification-plugins/*; do
-            notification="$(basename "$dir")"
-            if [ "$notification" != "example" ]; then
-                echo -e "\ncompiling $notification..."
-                nuitka \
-                    --assume-yes-for-downloads \
-                    --output-dir=/tmp/output/notification-plugins/ \
-                    --remove-output \
-                    --standalone \
-                    "$dir/$notification"
-                # remove ".bin" suffix
-                mv "/tmp/output/notification-plugins/$notification.dist/$notification.bin" "/tmp/output/notification-plugins/$notification.dist/$notification"
-            fi
-        done
-        \cp --archive --no-clobber /tmp/output/notification-plugins/*.dist/* /tmp/output/summary/notification-plugins
-    fi
-
+compile_notification_plugins() {
+    for dir in "$MONITORING_PLUGINS_DIR"/notification-plugins/*; do
+        notification="$(basename "$dir")"
+        if [ "$notification" != "example" ]; then
+            echo -e "\ncompiling $notification..."
+            nuitka \
+                --assume-yes-for-downloads \
+                --output-dir=/tmp/output/notification-plugins/ \
+                --remove-output \
+                --standalone \
+                "$dir/$notification"
+            # remove ".bin" suffix
+            mv "/tmp/output/notification-plugins/$notification.dist/$notification.bin" "/tmp/output/notification-plugins/$notification.dist/$notification"
+        fi
+    done
+    \cp --archive --no-clobber /tmp/output/notification-plugins/*.dist/* /tmp/output/summary/notification-plugins
 }
 
 prepare_fpm() {
