@@ -61,12 +61,12 @@ jobs:
         shell: 'bash'
         run: >
           echo
-          env.BASE_DIR="${{ env.BASE_DIR }"
-          inputs.arch="${{ inputs.arch }}"
-          inputs.check-plugin="${{ inputs.check-plugin }}"
-          inputs.distros="${{ inputs.distros }}"
-          inputs.lib-repo-ref="${{ inputs.lib-repo-ref }}"
-          inputs.package-iteration="${{ inputs.package-iteration }}"
+          BASE_DIR="${{ env.BASE_DIR }"
+          arch="${{ inputs.arch }}"
+          check-plugin="${{ inputs.check-plugin }}"
+          distros="${{ inputs.distros }}"
+          lib-repo-ref="${{ inputs.lib-repo-ref }}"
+          package-iteration="${{ inputs.package-iteration }}"
 
   # set-matrix:
   #   runs-on:
