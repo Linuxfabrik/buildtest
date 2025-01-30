@@ -3,14 +3,14 @@ name: 'Linuxfabrik: Build Linux (x86_64)'
 on:
   workflow_dispatch:
     inputs:
-      # package-version:
-      #   description: 'The version ("major.minor.patch"). If empty, version is taken from `version.txt`, and revision is auto-incremented.'
-      #   required: false
-      #   default: ''
       # lib-repo-ref:
       #   description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
       #   required: false
       #   default: ''
+      package-iteration:
+        description: 'The iteration to give to the package. RPM calls this the ‘release’. FreeBSD calls it ‘PORTREVISION’. Debian calls this ‘debian_revision’'
+        required: false
+        default: '1'
       check-plugin:
         description: 'If you only want to compile a specific check plugin, specify its name, for example `cpu-usage`, otherwise leave empty to build all plugins.'
         required: false
@@ -26,6 +26,37 @@ permissions:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  set-matrix:
+    runs-on:
+      - 'ubuntu-24.04'
+    steps:
+      - name: 'Find and Download Latest Version Artifact'
+        run: |
+          GH_API_URL="https://api.github.com/repos/buildtest/actions/artifacts"
+          ARTIFACT_NAME="version"
+
+          echo "Fetching latest artifact..."
+
+          # Fetch all artifacts and filter by name
+          ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
+            jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last")
+
+          # Extract the download URL
+          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url")
+
+          if [[ -z "$ARTIFACT_URL" || "$ARTIFACT_URL" == "null" ]]; then
+            echo "No previous version artifact found."
+            echo "package_version=1.0.0.0" >> $GITHUB_ENV
+          else
+            echo "Downloading artifact from: $ARTIFACT_URL"
+            curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
+            mkdir -p version_artifact
+            unzip -o version.zip -d version_artifact
+            PACKAGE_VERSION=$(cat version_artifact/version.txt)
+            echo "package_version=$PACKAGE_VERSION" >> $GITHUB_ENV
+          fi
+
   set-matrix:
     runs-on:
       - 'ubuntu-24.04'
@@ -109,7 +140,7 @@ jobs:
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash -x
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
-          ${{ inputs.package-version || github.ref_name }}
+          ${{ env.package-version }}
           ${{ inputs.package-iteration || '1' }}
           ${{ inputs.check-plugin || '' }}
 
