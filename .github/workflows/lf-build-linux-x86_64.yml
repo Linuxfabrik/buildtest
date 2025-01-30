@@ -18,7 +18,7 @@ on:
       distros:
         description: 'Comma-separated list of operating systems to build on. Supported: `debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404`.'
         required: false
-        default: 'debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404'
+        default: 'rocky9'
 
 env:
   # we use this to get a (mostly) unique directory, therefore avoiding folder collisions when multiple workflows are running
@@ -43,9 +43,15 @@ jobs:
           matrix=$(echo "$distros" | jq --compact-output --raw-input '{"distros": split(",")}')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
-  preparations:
+  build-packages:
     runs-on:
       - 'ubuntu-24.04'
+    needs:
+      - 'set-matrix'
+      - 'preparations'
+    strategy:
+      matrix:
+        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
     steps:
       - name: 'Debug Environment and Inputs'
         run: >
@@ -70,23 +76,13 @@ jobs:
       - name: 'mkdir -p ${{ env.BASE_DIR }}/build'
         run: 'mkdir -p ${{ env.BASE_DIR }}/build'
 
-  build-packages:
-    runs-on:
-      - 'ubuntu-24.04'
-    needs:
-      - 'set-matrix'
-      - 'preparations'
-    strategy:
-      matrix:
-        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
-    steps:
       - name: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
         run: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
 
       - name: 'Synchronize cached writes to persistent storage'
         run: 'sync'
 
-      - name: '⚙️ apt-get -y install lcov'
+      - name: '⚙️ apt-get -y install podman'
         run: |
           sudo apt-get update
           sudo apt-get -y install podman

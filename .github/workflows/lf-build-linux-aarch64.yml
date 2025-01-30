@@ -18,7 +18,7 @@ on:
       distros:
         description: 'Comma-separated list of operating systems to build on. Supported: `debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404`.'
         required: false
-        default: 'debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404'
+        default: 'rocky9'
 
 env:
   # we use this to get a (mostly) unique directory, therefore avoiding folder collisions when multiple workflows are running
