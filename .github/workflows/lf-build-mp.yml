@@ -1,4 +1,4 @@
-name: 'Linuxfabrik: Linux - Build'
+name: 'Linuxfabrik: Compile and Package'
 
 # Controls when the workflow will run
 on:
@@ -37,7 +37,7 @@ on:
         default: ''
 
       arch:
-        description: 'Architecture to build on. `X64` or `ARM64`.'
+        description: 'Comma-separated list of Architecture to build on. Supported: `X64,ARM64`.'
         required: false
         default: 'X64,ARM64'
 
@@ -61,12 +61,12 @@ jobs:
         shell: 'bash'
         run: >
           echo
-          env.BASE_DIR=${{ env.BASE_DIR }
-          inputs.arch=${{ inputs.arch }}
-          inputs.check-plugin=${{ inputs.check-plugin }}
-          inputs.distros=${{ inputs.distros }}
-          inputs.lib-repo-ref=${{ inputs.lib-repo-ref }}
-          inputs.package-iteration=${{ inputs.package-iteration }}
+          env.BASE_DIR="${{ env.BASE_DIR }"
+          inputs.arch="${{ inputs.arch }}"
+          inputs.check-plugin="${{ inputs.check-plugin }}"
+          inputs.distros="${{ inputs.distros }}"
+          inputs.lib-repo-ref="${{ inputs.lib-repo-ref }}"
+          inputs.package-iteration="${{ inputs.package-iteration }}"
 
   # set-matrix:
   #   runs-on:
