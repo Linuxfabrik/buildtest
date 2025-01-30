@@ -59,7 +59,7 @@ jobs:
       - name: 'Debug Environment and Inputs'
         run: >
           echo
-          BASE_DIR=${{ env.BASE_DIR }
+          BASE_DIR=${{ env.BASE_DIR }}
           arch=${{ inputs.arch }}
           check-plugin=${{ inputs.check-plugin }}
           distros=${{ inputs.distros }}
