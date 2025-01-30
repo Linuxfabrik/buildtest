@@ -1,4 +1,4 @@
-name: 'Linuxfabrik: Build Linux (x86_64)'
+name: 'Linuxfabrik: Build Linux'
 
 on:
   workflow_dispatch:
@@ -29,6 +29,7 @@ jobs:
   set-matrix:
     runs-on:
       - 'ubuntu-24.04'
+      - 'ubuntu-24.04-arm'
     outputs:
       matrix: '${{ steps.generate-matrix.outputs.matrix }}'
     steps:
@@ -42,6 +43,7 @@ jobs:
   build-packages:
     runs-on:
       - 'ubuntu-24.04'
+      - 'ubuntu-24.04-arm'
     needs:
       - 'set-matrix'
     strategy:
@@ -117,4 +119,4 @@ jobs:
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
           path: 'build/'
-          name: 'monitoring-plugins-linux.${{ matrix.distro }}.x86_64.zip'
+          name: "monitoring-plugins-linux.${{ matrix.distro }}.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"
