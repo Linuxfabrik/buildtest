@@ -26,7 +26,7 @@ permissions:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  set-matrix:
+  get-version:
     runs-on:
       - 'ubuntu-24.04'
     steps:
@@ -75,6 +75,7 @@ jobs:
       - 'ubuntu-24.04'
     needs:
       - 'set-matrix'
+      - 'get-version'
     strategy:
       matrix:
         distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
