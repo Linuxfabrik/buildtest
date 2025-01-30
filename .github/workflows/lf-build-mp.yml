@@ -58,7 +58,6 @@ jobs:
       - 'windows-2025'
     steps:
       - name: 'Debug Environment and Inputs'
-        shell: 'bash'
         run: >
           echo
           BASE_DIR=${{ env.BASE_DIR }
