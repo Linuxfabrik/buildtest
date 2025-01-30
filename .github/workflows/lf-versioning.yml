@@ -99,9 +99,6 @@ jobs:
 
           new_version = f"{major}.{minor}.{patch}.{revision}"
 
-          print(f"previous version: {previous_version}")
-          print(f"new version: {new_version}")
-
           # Output new version
           with open("version.txt", "w") as f:
               f.write(new_version)
