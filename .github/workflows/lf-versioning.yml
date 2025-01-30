@@ -7,7 +7,7 @@ on:
 
 jobs:
   versioning:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.new_version }}
       new_release: ${{ steps.version.outputs.new_release }}
@@ -31,38 +31,40 @@ jobs:
             echo "tagged=false" >> $GITHUB_ENV
           fi
 
+      - name: "Create Version Bump Script"
+        run: |
+          cat <<EOF > bump_version.py
+          import sys
+          version_file = "repos/monitoring-plugins/version.txt"
+
+          try:
+              with open(version_file, "r") as f:
+                  version = f.read().strip()
+          except FileNotFoundError:
+              version = "1.0.0"
+
+          parts = version.split(".")
+          while len(parts) < 4:
+              parts.append("0")  # Ensure at least major.minor.patch.revision
+
+          parts[3] = str(int(parts[3]) + 1)  # Increment revision
+          new_version = ".".join(parts)
+
+          with open(version_file, "w") as f:
+              f.write(new_version)
+
+          print(new_version)
+          EOF
+
       - name: "Read and Increment Version if No Tag"
         id: version_update
         run: |
-          VERSION_FILE="version.txt"
-
           if [[ "${{ env.tagged }}" == "true" ]]; then
             # If latest commit is tagged, use that tag
             NEW_VERSION="${{ env.latest_commit_tag }}"
           else
-            # No tag → Read version from file and bump revision using Python
-            NEW_VERSION=$(python3 <<EOF
-            import sys
-            try:
-                with open("$VERSION_FILE", "r") as f:
-                    version = f.read().strip()
-            except FileNotFoundError:
-                version = "1.0.0"
-
-            parts = version.split(".")
-            while len(parts) < 4:
-                parts.append("0")  # Ensure at least major.minor.patch.revision
-
-            parts[3] = str(int(parts[3]) + 1)  # Increment revision
-            new_version = ".".join(parts)
-
-            with open("$VERSION_FILE", "w") as f:
-                f.write(new_version)
-
-            print(new_version)
-            EOF
-            )
-            echo "$NEW_VERSION" > "$VERSION_FILE"
+            # No tag → Execute Python script to bump version
+            NEW_VERSION=$(python3 bump_version.py)
             echo "version_updated=true" >> $GITHUB_ENV
           fi
 
@@ -74,7 +76,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add version.txt
+          git add repos/monitoring-plugins/version.txt
           git commit -m "chore(workflow): bump version to ${{ env.new_version }}"
           git push origin main
 
@@ -88,4 +90,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: version
-          path: version.txt
+          path: repos/monitoring-plugins/version.txt
