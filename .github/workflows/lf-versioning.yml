@@ -19,7 +19,7 @@ jobs:
 
       - name: 'Check if Latest Commit is Tagged'
         run: |
-          TAG=$(git tag --points-at HEAD)
+          TAG=$(git tag --points-at origin/main^)
           if [[ -n "$TAG" ]]; then
             echo "latest_commit_tag=$TAG" >> $GITHUB_ENV
             echo "tagged=true" >> $GITHUB_ENV
