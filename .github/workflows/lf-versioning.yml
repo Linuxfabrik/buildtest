@@ -9,7 +9,7 @@ jobs:
   versioning:
     runs-on: 'ubuntu-24.04'
     outputs:
-      version: ${{ steps.version_update.outputs.new_version }}
+      version: "${{ steps.version_update.outputs.new_version }}"
 
     steps:
       - name: 'Checkout Repository'
