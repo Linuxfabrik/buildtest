@@ -71,7 +71,7 @@ jobs:
           parts = previous_version.split(".")
           while len(parts) < 4:
               parts.append("0")  # Ensure at least major.minor.patch.revision
-          
+
           major, minor, patch, revision = map(int, parts)
 
           # Get second-to-last pushed commit (last pushed commit is HEAD)
