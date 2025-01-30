@@ -40,7 +40,7 @@ compile_plugins "$MONITORING_PLUGINS_DIR" "$CHECK_PLUGIN"
 
 # RHEL only - compile .te file to .pp for SELinux
 mkdir /tmp/selinux
-cp /repos/monitoring-plugins/selinux/linuxfabrik-monitoring-plugins.te /tmp/selinux/
+cp /repos/monitoring-plugins/assets/selinux/linuxfabrik-monitoring-plugins.te /tmp/selinux/
 cd /tmp/selinux/
 make --file /usr/share/selinux/devel/Makefile linuxfabrik-monitoring-plugins.pp
 \cp -a linuxfabrik-monitoring-plugins.pp /tmp/output/summary/check-plugins
