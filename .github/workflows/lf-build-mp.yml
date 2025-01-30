@@ -55,7 +55,6 @@ jobs:
     runs-on:
       - 'ubuntu-24.04'
       - 'ubuntu-24.04-arm'
-      - 'windows-2025'
     steps:
       - name: 'Debug Environment and Inputs'
         run: >
