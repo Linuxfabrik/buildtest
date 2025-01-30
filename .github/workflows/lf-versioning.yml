@@ -1,4 +1,4 @@
-name: "Versioning"
+name: "Linuxfabrik: Versioning"
 
 on:
   push:
