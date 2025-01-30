@@ -1,4 +1,4 @@
-name: "LF Build Linux (x86_64)"
+name: 'Linuxfabrik: Build Linux (x86_64)'
 
 on:
   workflow_dispatch:
@@ -11,14 +11,14 @@ on:
         description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
         required: false
         default: ''
-      distros:
-        description: 'Comma-separated list of operating systems to build on. Supported: `debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404`.'
-        required: false
-        default: 'debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404'
       check-plugin:
         description: 'If you only want to compile a specific check plugin, specify its name, for example `cpu-usage`, otherwise leave empty to build all plugins.'
         required: false
         default: 'cpu-usage'
+      distros:
+        description: 'Comma-separated list of operating systems to build on. Supported: `debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404`.'
+        required: false
+        default: 'debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404'
 
 jobs:
   build-linux:
