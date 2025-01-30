@@ -35,7 +35,7 @@ jobs:
         run: |
           cat <<EOF > bump_version.py
           import sys
-          version_file = "repos/monitoring-plugins/version.txt"
+          version_file = "version.txt"
 
           try:
               with open(version_file, "r") as f:
@@ -76,7 +76,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add repos/monitoring-plugins/version.txt
+          git add version.txt
           git commit -m "chore(workflow): bump version to ${{ env.new_version }}"
           git push origin main
 
@@ -90,4 +90,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: version
-          path: repos/monitoring-plugins/version.txt
+          path: version.txt
