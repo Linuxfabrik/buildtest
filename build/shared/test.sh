@@ -1,0 +1,1 @@
+echo "Linuxfabrik $(uname -a)"
