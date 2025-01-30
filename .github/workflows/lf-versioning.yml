@@ -21,7 +21,6 @@ jobs:
 
       - name: "Check if Latest Commit is Tagged"
         id: check_commit_tag
-        shell: 'bash +x'
         run: |
           TAG=$(git tag --points-at HEAD)
           if [[ -n "$TAG" ]]; then
