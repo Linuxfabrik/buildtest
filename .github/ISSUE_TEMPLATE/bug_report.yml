@@ -1,0 +1,107 @@
+name: "Bug report"
+description: "Submit a report and help us improve the Monitoring Plugins"
+title: "plugin-name: A short sentence describing the problem"
+labels: ["bug"]
+assignees: [""]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Thank you for contributing to this project!
+        Please note this is a **free and open-source** project. Most people take on their own time to help you, so please, be patient.
+        You can obtain [Enterprise support](https://www.linuxfabrik.ch/angebot/service-und-support/) if you need some kind of SLA.
+
+  - type: checkboxes
+    id: before-posting
+    attributes:
+      label: 'This issue respects the following points:'
+      description: |
+        All conditions are **required**. Your issue can be closed if these are checked incorrectly.
+      options:
+        - label: This is a **bug**, not a question or a setup/configuration issue.
+          required: true
+        - label: This issue is **not** already reported on Github _(I've searched it)_.
+          required: true
+        - label: I use the latest release of the Monitoring Plugins (https://github.com/Linuxfabrik/monitoring-plugins/releases).
+          required: true
+        - label: I agree to follow Monitoring Plugins's [Code of Conduct](https://github.com/Linuxfabrik/monitoring-plugins/blob/main/CODE_OF_CONDUCT.md).
+          required: true
+
+  - type: checkboxes
+    id: variant
+    attributes:
+      label: 'Which variant of the Monitoring Plugins do you use?'
+      options:
+        - label: .rpm/.deb package from repo.linuxfabrik.ch
+        - label: Compiled for Linux (.tar/.zip from download.linuxfabrik.ch)
+        - label: Compiled for Windows (from download.linuxfabrik.ch)
+        - label: Source Code from GitHub
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug description
+      description: |
+        Provide a clear and concise description of the bug you're experiencing.
+    validations:
+      required: true
+
+  - type: input
+    id: command-line-call
+    attributes:
+      label: Steps to reproduce - Plugin call
+      description: |
+        Your plugin command line call (```plugin-name --param1=value1 --param2=value2```). 
+        Example: ```/usr/lib64/nagios/plugins/cpu-usage --count 5 --critical 90 --warning 80```
+        > NOTE: This will be automatically formatted into code for better readability.
+    validations:
+      required: true
+
+  - type: textarea
+    id: data
+    attributes:
+      label: Steps to reproduce - Data
+      description: |
+        Enter here the output of your operating system or application (which will be analyzed by the plugin as input), e.g. JSON data, the output of the shell comand that the plugin calls etc.
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please give us as much information as possible about your system. For example, the output of ```uname -a```.
+    validations:
+      required: true
+
+  - type: input
+    id: version-result
+    attributes:
+      label: Plugin Version
+      description: |
+        Result of ```plugin-name --version```. For example: 
+        ```about-me: v2023010603 by Linuxfabrik GmbH, Zurich/Switzerland```
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      description: |
+        If you use the Source Code variant: Output of ```python --version```
+
+  - type: textarea
+    id: pyhton-modules
+    attributes:
+      label: List of Python modules
+      description: |
+        If you use the Source Code variant: Output of ```python -c 'help("modules")'``` or similar
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: |
+        Any additional information related to the issue. For example as much information as possible about your application, including its version etc.
+

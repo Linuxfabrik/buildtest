@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an idea for this project
+title: "[plugin-name: ]A short sentence describing the new feature"
+labels: ["enhancement"]
+assignees: [""]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an idea to make the Monitoring Plugins better.
+        Please complete the below form to ensure we have all the details to get things started.
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+      description: |
+        Please describe the desired behavior, pitch your idea, or suggest improvements. Do you have an idea how to implement this? Let us know! A clear and concise description of what you want to happen or features you've considered.
+    validations:
+      required: true
+  - type: textarea
+    id: info
+    attributes:
+      label: Additional context
+      description: |
+        Add any other context or screenshots about the feature request here.
