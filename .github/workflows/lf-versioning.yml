@@ -17,17 +17,6 @@ jobs:
         with:
           fetch-depth: 0  # Required for full commit history
 
-      - name: 'Check if Latest Commit is Tagged'
-        run: |
-          TAG=$(git tag --points-at origin/main^)
-          if [[ -n "$TAG" ]]; then
-            echo "latest_commit_tag=$TAG" >> $GITHUB_ENV
-            echo "tagged=true" >> $GITHUB_ENV
-          else
-            echo "latest_commit_tag=" >> $GITHUB_ENV
-            echo "tagged=false" >> $GITHUB_ENV
-          fi
-
       # Artifacts created in a previous workflow run cannot be accessed using actions/download-artifact@v4 because it only fetches artifacts from the same workflow run.
       # So we must query the GitHub REST API for the most recent successful artifact.
       - name: 'Find and Download Latest Version Artifact'
