@@ -142,7 +142,7 @@ jobs:
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash -x
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
-          ${{ env.VERSION }}
+          ${{ VERSION }}
           ${{ inputs.package-iteration || '1' }}
           ${{ inputs.check-plugin || '' }}
 
