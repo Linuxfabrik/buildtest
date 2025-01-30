@@ -9,15 +9,13 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.new_version }}
-      new_release: ${{ steps.version.outputs.new_release }}
+      version: ${{ steps.version_update.outputs.new_version }}
 
     steps:
       - name: "Checkout Repository"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Required for full commit history
-          token: ${{ secrets.GH_TOKEN_CUSTOM }}  # ✅ Use custom GH_TOKEN
 
       - name: "Check if Latest Commit is Tagged"
         id: check_commit_tag
@@ -31,62 +29,95 @@ jobs:
             echo "tagged=false" >> $GITHUB_ENV
           fi
 
+      - name: "Try to Download Latest Version Artifact"
+        id: download_previous_version
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: version
+          path: .
+
+      - name: "Extract Previous Version from Artifact"
+        id: extract_version
+        run: |
+          if [[ -s "version/version.txt" ]]; then
+            PREVIOUS_VERSION=$(cat version/version.txt)
+            echo "Previous version found: $PREVIOUS_VERSION"
+          else
+            PREVIOUS_VERSION="1.0.0.0"
+            echo "No previous version found, defaulting to $PREVIOUS_VERSION"
+          fi
+          echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_ENV
+
       - name: "Create Version Bump Script"
         run: |
           cat <<EOF > bump_version.py
-          import sys
-          version_file = "version.txt"
+          import os
+          import subprocess
+          import re
 
-          try:
-              with open(version_file, "r") as f:
-                  version = f.read().strip()
-          except FileNotFoundError:
-              version = "1.0.0"
+          # Get previous version
+          previous_version = os.getenv("previous_version", "1.0.0.0").strip()
 
-          parts = version.split(".")
+          # Parse version into components
+          parts = previous_version.split(".")
           while len(parts) < 4:
               parts.append("0")  # Ensure at least major.minor.patch.revision
+          
+          major, minor, patch, revision = map(int, parts)
 
-          parts[3] = str(int(parts[3]) + 1)  # Increment revision
-          new_version = ".".join(parts)
+          # Get commit messages since last version tag
+          commit_messages = subprocess.run(
+              ["git", "log", "--pretty=%s", "--no-merges"],
+              capture_output=True,
+              text=True
+          ).stdout.splitlines()
 
-          with open(version_file, "w") as f:
+          # Determine version bump type
+          bump_type = "revision"
+          for msg in commit_messages:
+              if "BREAKING CHANGE" in msg or re.search(r"(feat|fix)!:", msg):
+                  bump_type = "major"
+                  break
+              elif msg.startswith("feat:"):
+                  bump_type = "minor"
+              elif msg.startswith("fix:") and bump_type != "minor":
+                  bump_type = "patch"
+
+          # Apply version bump
+          if bump_type == "major":
+              major += 1
+              minor, patch, revision = 0, 0, 0
+          elif bump_type == "minor":
+              minor += 1
+              patch, revision = 0, 0
+          elif bump_type == "patch":
+              patch += 1
+              revision = 0
+          else:  # revision bump
+              revision += 1
+
+          new_version = f"{major}.{minor}.{patch}.{revision}"
+
+          print(f"previous version: {version}")
+          print(f"new version: {new_version}")
+
+          # Output new version
+          with open("version.txt", "w") as f:
               f.write(new_version)
 
           print(new_version)
           EOF
 
-      - name: "Read and Increment Version if No Tag"
+      - name: "Run Version Bump Script"
         id: version_update
         run: |
-          if [[ "${{ env.tagged }}" == "true" ]]; then
-            # If latest commit is tagged, use that tag
-            NEW_VERSION="${{ env.latest_commit_tag }}"
-          else
-            # No tag → Execute Python script to bump version
-            NEW_VERSION=$(python3 bump_version.py)
-            echo "version_updated=true" >> $GITHUB_ENV
-          fi
-
+          NEW_VERSION=$(python3 bump_version.py)
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+          echo "$NEW_VERSION" > version.txt
           echo "New version: $NEW_VERSION"
 
-      - name: "Commit and Push Version Change if Updated"
-        if: env.version_updated == 'true'
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add version.txt
-          git commit -m "chore(workflow): bump version to ${{ env.new_version }}"
-          git push origin main
-
-      - name: "Create Git Tag for Release"
-        if: env.version_updated == 'true'
-        run: |
-          git tag "v${{ env.new_version }}"
-          git push origin "v${{ env.new_version }}"
-
-      - name: "Upload Version File as Artifact"
+      - name: "Upload New Version as Artifact"
         uses: actions/upload-artifact@v4
         with:
           name: version
