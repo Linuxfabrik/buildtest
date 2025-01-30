@@ -66,9 +66,16 @@ jobs:
           
           major, minor, patch, revision = map(int, parts)
 
-          # Get commit messages since last version tag
+          # Get last pushed commit (from origin/main)
+          last_pushed_commit = subprocess.run(
+              ["git", "rev-parse", "origin/main"],
+              capture_output=True,
+              text=True
+          ).stdout.strip()
+
+          # Get commit messages since last push
           commit_messages = subprocess.run(
-              ["git", "log", "--pretty=%s", "--no-merges"],
+              ["git", "log", f"{last_pushed_commit}..HEAD", "--pretty=%s", "--no-merges"],
               capture_output=True,
               text=True
           ).stdout.splitlines()
