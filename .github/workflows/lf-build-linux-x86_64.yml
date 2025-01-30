@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: 'Find and Download Latest Version Artifact'
         run: |
-          GH_API_URL="https://api.github.com/repos/buildtest/actions/artifacts"
+          GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
           ARTIFACT_NAME="version"
 
           echo "Fetching latest artifact..."
@@ -40,21 +40,22 @@ jobs:
           # Fetch all artifacts and filter by name
           ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
-            jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last")
+            jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last // {}")
 
           # Extract the download URL
-          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url")
+          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url // empty")
 
-          if [[ -z "$ARTIFACT_URL" || "$ARTIFACT_URL" == "null" ]]; then
-            echo "No previous version artifact found."
-            echo "package_version=1.0.0.0" >> $GITHUB_ENV
+          if [[ -z "$ARTIFACT_URL" ]]; then
+            echo "❌ No previous version artifact found. Exiting..."
+            exit 1
           else
-            echo "Downloading artifact from: $ARTIFACT_URL"
+            echo "✅ Downloading artifact from: $ARTIFACT_URL"
             curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
             mkdir -p version_artifact
             unzip -o version.zip -d version_artifact
-            PACKAGE_VERSION=$(cat version_artifact/version.txt)
-            echo "package_version=$PACKAGE_VERSION" >> $GITHUB_ENV
+            VERSION=$(cat version_artifact/version.txt)
+            echo "✅ Extracted version: $VERSION"
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
           fi
 
   set-matrix:
@@ -141,7 +142,7 @@ jobs:
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash -x
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
-          ${{ env.package-version }}
+          ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
           ${{ inputs.check-plugin || '' }}
 

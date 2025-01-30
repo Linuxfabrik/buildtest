@@ -19,7 +19,7 @@ jobs:
 
       - name: 'Find and Download Latest Version Artifact'
         run: |
-          GH_API_URL="https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
+          GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
           ARTIFACT_NAME="version"
 
           echo "Fetching latest artifact..."
