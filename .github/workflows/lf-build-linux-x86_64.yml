@@ -50,9 +50,12 @@ jobs:
             exit 1
           else
             echo "✅ Downloading artifact from: $ARTIFACT_URL"
-            curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
-            mkdir -p version_artifact
-            unzip -o version.zip -d version_artifact
+            curl --location \
+                 --output version.zip \
+                 --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                 "$ARTIFACT_URL"
+            mkdir --parents version_artifact
+            unzip --overwrite version.zip --destination version_artifact
             VERSION=$(cat version_artifact/version.txt)
             echo "✅ Extracted version: $VERSION"
             echo "VERSION=$VERSION" >> $GITHUB_ENV
