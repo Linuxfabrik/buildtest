@@ -29,35 +29,35 @@ jobs:
             echo "tagged=false" >> $GITHUB_ENV
           fi
 
-      - name: 'Try to Download Latest Version Artifact'
-        id: download_previous_version
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: version
-          path: .
-
-      - name: 'Check if Version Artifact Exists'
-        id: check_version_file
+      # Artifacts created in a previous workflow run cannot be accessed using actions/download-artifact@v4 because it only fetches artifacts from the same workflow run.
+      # So we must query the GitHub REST API for the most recent successful artifact.
+      - name: 'Find and Download Latest Version Artifact'
+        id: download_latest_version
         run: |
-          if [[ -s "version.txt" ]]; then
-            echo "Previous version artifact found."
-          else
-            echo "No previous version artifact found, initializing to 1.0.0.0"
-            echo "1.0.0.0" > version.txt
-          fi
+          GH_API_URL="https://api.github.com/repos/${{ github.repository }}/actions/artifacts"
+          ARTIFACT_NAME="version"
 
-      - name: 'Extract Previous Version from Artifact'
-        id: extract_version
-        run: |
-          if [[ -s "version.txt" ]]; then
-            PREVIOUS_VERSION=$(cat version.txt)
-            echo "Previous version found: $PREVIOUS_VERSION"
+          echo "Fetching latest artifact..."
+
+          # Fetch all artifacts and filter by name
+          ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
+            jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last")
+
+          # Extract the download URL
+          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url")
+
+          if [[ -z "$ARTIFACT_URL" || "$ARTIFACT_URL" == "null" ]]; then
+            echo "No previous version artifact found."
+            echo "previous_version=1.0.0.0" >> $GITHUB_ENV
           else
-            PREVIOUS_VERSION="1.0.0.0"
-            echo "No previous version found, defaulting to $PREVIOUS_VERSION"
+            echo "Downloading artifact from: $ARTIFACT_URL"
+            curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
+            mkdir -p version_artifact
+            unzip -o version.zip -d version_artifact
+            PREVIOUS_VERSION=$(cat version_artifact/version.txt)
+            echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_ENV
           fi
-          echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_ENV
 
       - name: 'Create Version Bump Script'
         run: |
