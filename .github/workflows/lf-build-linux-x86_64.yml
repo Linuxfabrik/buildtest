@@ -27,17 +27,20 @@ permissions:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   automatic-versioning:
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+    runs-on:
+      - 'ubuntu-24.04'
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Install dependencies
-      run: npm install -g semantic-release @semantic-release/git @semantic-release/changelog
+      - name: Install dependencies
+        run: npm install -g semantic-release @semantic-release/git @semantic-release/changelog
 
-    - name: Determine Next Version
-      id: version
-      run: echo "VERSION=$(npx semantic-release --dry-run | grep "nextRelease.version" | awk -F'"' '{print $4}')" >> $GITHUB_ENV
+      - name: Determine Next Version
+        id: version
+        run: echo "VERSION=$(npx semantic-release --dry-run | grep "nextRelease.version" | awk -F'"' '{print $4}')" >> $GITHUB_ENV
 
   set-matrix:
     runs-on:
