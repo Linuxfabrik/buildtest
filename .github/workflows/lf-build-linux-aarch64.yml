@@ -1,4 +1,4 @@
-name: 'Linuxfabrik: Build Linux (aarch64)'
+name: 'Linuxfabrik: Build Linux (x86_64)'
 
 on:
   workflow_dispatch:
@@ -43,9 +43,14 @@ jobs:
           matrix=$(echo "$distros" | jq --compact-output --raw-input '{"distros": split(",")}')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
-  preparations:
+  build-packages:
     runs-on:
       - 'ubuntu-24.04-arm'
+    needs:
+      - 'set-matrix'
+    strategy:
+      matrix:
+        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
     steps:
       - name: 'Debug Environment and Inputs'
         run: >
@@ -70,21 +75,16 @@ jobs:
       - name: 'mkdir -p ${{ env.BASE_DIR }}/build'
         run: 'mkdir -p ${{ env.BASE_DIR }}/build'
 
-  build-packages:
-    runs-on:
-      - 'ubuntu-24.04-arm'
-    needs:
-      - 'set-matrix'
-      - 'preparations'
-    strategy:
-      matrix:
-        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
-    steps:
       - name: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
         run: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
 
       - name: 'Synchronize cached writes to persistent storage'
         run: 'sync'
+
+      - name: '⚙️ apt-get -y install podman'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install podman
 
       - name: 'Build the container for ${{ matrix.distro }}'
         run: >
