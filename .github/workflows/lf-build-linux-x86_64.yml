@@ -86,6 +86,11 @@ jobs:
       - name: 'Synchronize cached writes to persistent storage'
         run: 'sync'
 
+      - name: '⚙️ apt-get -y install lcov'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install podman
+
       - name: 'Build the container for ${{ matrix.distro }}'
         run: >
           podman build
