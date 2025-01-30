@@ -48,7 +48,6 @@ jobs:
       - 'ubuntu-24.04'
     needs:
       - 'set-matrix'
-      - 'preparations'
     strategy:
       matrix:
         distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
