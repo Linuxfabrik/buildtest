@@ -1,9 +1,9 @@
-name: "Versioning"
+name: 'Linuxfabrik: Semantic Auto-Versioning'
 
 on:
   push:
     branches:
-      - main
+      - 'main'
 
 jobs:
   versioning:
@@ -12,12 +12,12 @@ jobs:
       version: ${{ steps.version_update.outputs.new_version }}
 
     steps:
-      - name: "Checkout Repository"
+      - name: 'Checkout Repository'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Required for full commit history
 
-      - name: "Check if Latest Commit is Tagged"
+      - name: 'Check if Latest Commit is Tagged'
         id: check_commit_tag
         run: |
           TAG=$(git tag --points-at HEAD)
@@ -29,7 +29,7 @@ jobs:
             echo "tagged=false" >> $GITHUB_ENV
           fi
 
-      - name: "Try to Download Latest Version Artifact"
+      - name: 'Try to Download Latest Version Artifact'
         id: download_previous_version
         continue-on-error: true
         uses: actions/download-artifact@v4
@@ -37,7 +37,7 @@ jobs:
           name: version
           path: .
 
-      - name: "Extract Previous Version from Artifact"
+      - name: 'Extract Previous Version from Artifact'
         id: extract_version
         run: |
           if [[ -s "version/version.txt" ]]; then
@@ -49,7 +49,7 @@ jobs:
           fi
           echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_ENV
 
-      - name: "Create Version Bump Script"
+      - name: 'Create Version Bump Script'
         run: |
           cat <<EOF > bump_version.py
           import os
@@ -113,7 +113,7 @@ jobs:
           print(new_version)
           EOF
 
-      - name: "Run Version Bump Script"
+      - name: 'Run Version Bump Script'
         id: version_update
         run: |
           NEW_VERSION=$(python3 bump_version.py)
@@ -121,7 +121,7 @@ jobs:
           echo "$NEW_VERSION" > version.txt
           echo "New version: $NEW_VERSION"
 
-      - name: "Upload New Version as Artifact"
+      - name: 'Upload New Version as Artifact'
         uses: actions/upload-artifact@v4
         with:
           name: version
