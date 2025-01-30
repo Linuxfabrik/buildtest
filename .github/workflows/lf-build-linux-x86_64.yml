@@ -65,6 +65,7 @@ jobs:
         uses: 'actions/cache@v4'
         with:
           path: 'repos/monitoring-plugins'
+          key: 'version.txt'
 
       - name: 'Checkout the lib repo'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
@@ -73,10 +74,11 @@ jobs:
           ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
           path: 'repos/lib'
 
-      - name: 'Cache the checkout'
-        uses: 'actions/cache@v4'
-        with:
-          path: 'repos/lib'
+      # - name: 'Cache the checkout'
+      #   uses: 'actions/cache@v4'
+      #   with:
+      #     path: 'repos/lib'
+      #     key: 'version.txt'
 
       - name: 'mkdir -p build'
         run: 'mkdir -p build'
