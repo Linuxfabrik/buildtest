@@ -62,7 +62,7 @@ jobs:
           path: 'repos/monitoring-plugins'
 
       - name: 'Cache the checkout'
-        uses: 'actions/cache@v2'
+        uses: 'actions/cache@v4'
         with:
           path: 'repos/monitoring-plugins'
 
@@ -74,7 +74,7 @@ jobs:
           path: 'repos/lib'
 
       - name: 'Cache the checkout'
-        uses: 'actions/cache@v2'
+        uses: 'actions/cache@v4'
         with:
           path: 'repos/lib'
 
