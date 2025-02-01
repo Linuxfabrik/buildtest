@@ -96,12 +96,14 @@ compile_plugins() {
 prepare_fpm() {
     PACKAGE_VERSION="$1"
     PACKAGE_ITERATION="$2"
-    MONITORING_PLUGINS_DIR="$3"
+    PACKAGE_ARCH="$3"
+    MONITORING_PLUGINS_DIR="$4"
 
-    if [[ -z "$PACKAGE_VERSION" || -z "$PACKAGE_ITERATION" || -z "$MONITORING_PLUGINS_DIR" ]]; then
-        echo "Usage: ${FUNCNAME[0]} <PACKAGE_VERSION> <PACKAGE_ITERATION> <MONITORING_PLUGINS_DIR>"
+    if [[ -z "$PACKAGE_VERSION" || -z "$PACKAGE_ITERATION" || -z "$PACKAGE_ARCH" || -z "$MONITORING_PLUGINS_DIR" ]]; then
+        echo "Usage: ${FUNCNAME[0]} <PACKAGE_VERSION> <PACKAGE_ITERATION> <PACKAGE_ARCH> <MONITORING_PLUGINS_DIR>"
         echo "  PACKAGE_VERSION: Version number starting with a digit (e.g. 2023123101) or 'main' for the latest development version."
         echo "  PACKAGE_ITERATION: Iteration number (e.g. 2) to specify the bugfix level for this package."
+        echo "  PACKAGE_ARCH: Architecture. 'x86_64' or 'aarch64'."
         echo "  MONITORING_PLUGINS_DIR: Path to the monitoring-plugins directory."
         exit 1
     fi
@@ -116,7 +118,7 @@ prepare_fpm() {
 
     cat > .fpm << EOF
 --after-install "$MONITORING_PLUGINS_DIR/build/shared/rpm-post-install"
---architecture all
+--architecture "$PACKAGE_ARCH"
 --chdir /tmp/output/summary/check-plugins
 --description "This Enterprise Class Check Plugin Collection offers a bunch of Nagios-compatible check plugins for Icinga, Naemon, Nagios, OP5, Shinken, Sensu and other monitoring applications. Each plugin is a stand-alone command line tool that provides a specific type of check. Typically, your monitoring software will run these check plugins to determine the current status of hosts and services on your network."
 --input-type dir
