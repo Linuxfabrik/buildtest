@@ -4,10 +4,12 @@ set -e
 
 PACKAGE_VERSION="$1"
 PACKAGE_ITERATION="$2"
+PACKAGE_ARCH="$3"
 if [[ -z "$PACKAGE_VERSION" || -z "$PACKAGE_ITERATION" ]]; then
-    echo "Usage: $(basename "$0") <PACKAGE_VERSION> <PACKAGE_ITERATION> [<CHECK_PLUGIN>]"
+    echo "Usage: $(basename "$0") <PACKAGE_VERSION> <PACKAGE_ITERATION> <PACKAGE_ARCH> [<CHECK_PLUGIN>]"
     echo "  PACKAGE_VERSION: Version number starting with a digit (e.g. 2023123101) or 'main' for the latest development version."
     echo "  PACKAGE_ITERATION: Iteration number (e.g. 2) to specify the bugfix level for this package."
+    echo "  PACKAGE_ARCH: Architecture. 'X64' (or 'x86_64'), 'ARM64' (or 'aarch64')"
     echo "  CHECK_PLUGIN: Optional. If you only want to compile a specific check plugin, specify its name, for example 'xml'."
     exit 1
 fi
@@ -44,7 +46,7 @@ make --file /usr/share/selinux/devel/Makefile linuxfabrik-monitoring-plugins.pp
 \cp -a linuxfabrik-monitoring-plugins.pp /tmp/output/summary/check-plugins
 
 # prepare files for fpm
-prepare_fpm "$PACKAGE_VERSION" "$PACKAGE_ITERATION" "$MONITORING_PLUGINS_DIR"
+prepare_fpm "$PACKAGE_VERSION" "$PACKAGE_ITERATION" "$PACKAGE_ARCH" "$MONITORING_PLUGINS_DIR"
 
 # create packages using fpm
 cd /tmp/fpm/check-plugins

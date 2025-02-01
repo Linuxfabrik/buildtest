@@ -1,24 +1,16 @@
-name: 'Linuxfabrik: Build Windows (x86_64)'
+name: 'Linuxfabrik: Build Linux (x86_64)'
 
 on:
   workflow_dispatch:
     inputs:
-      package-version:
-        description: 'The version ("major.minor.patch"). If empty, version is taken from `version.txt`, and revision is auto-incremented.'
-        required: false
-        default: ''
-      lib-repo-ref:
-        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
-        required: false
-        default: ''
+      # lib-repo-ref:
+      #   description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
+      #   required: false
+      #   default: ''
       check-plugin:
         description: 'If you only want to compile a specific check plugin, specify its name, for example `cpu-usage`, otherwise leave empty to build all plugins.'
         required: false
         default: 'cpu-usage'
-
-env:
-  # we use this to get a (mostly) unique directory, therefore avoiding folder collisions when multiple workflows are running
-  BASE_DIR: '${{ github.sha }}-${{ github.run_id }}_${{ github.run_attempt }}'
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
@@ -39,68 +31,109 @@ jobs:
           matrix=$(echo "$distros" | jq --compact-output --raw-input '{"distros": split(",")}')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
-  preparations:
+  build-packages:
     runs-on:
       - 'windows-2025'
+    needs:
+      - 'set-matrix'
+    strategy:
+      matrix:
+        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
     steps:
       - name: 'Debug Environment and Inputs'
         run: >
           echo
           check-plugin=${{ inputs.check-plugin }}
           lib-repo-ref=${{ inputs.lib-repo-ref }}
-          package-iteration=${{ inputs.package-iteration }}
 
-
-      - name: 'Checkout the monitoring-plugins repo'
+      - name: 'git checkout https://github.com/Linuxfabrik/monitoring-plugins'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:
-          path: '${{ env.BASE_DIR }}/repos/monitoring-plugins'
+          path: 'repos/monitoring-plugins'
 
-      - name: 'Checkout the lib repo'
+      - name: 'Cache the checkout'
+        uses: 'actions/cache@v4'
+        with:
+          path: 'repos/monitoring-plugins'
+          key: 'version.txt'
+
+      - name: 'git checkout https://github.com/Linuxfabrik/lib'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:
           repository: 'Linuxfabrik/lib'
           ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
-          path: '${{ env.BASE_DIR }}/repos/lib'
+          path: 'repos/lib'
 
-      - name: 'mkdir -p ${{ env.BASE_DIR }}/build'
-        run: 'mkdir -p ${{ env.BASE_DIR }}/build'
+      # - name: 'Cache the checkout'
+      #   uses: 'actions/cache@v4'
+      #   with:
+      #     path: 'repos/lib'
+      #     key: 'version.txt'
 
-  build-packages:
-    runs-on:
-      - 'windows-2025'
-    needs:
-      - 'set-matrix'
-      - 'preparations'
-    strategy:
-      matrix:
-        distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
-    steps:
-      - name: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
-        run: 'mkdir -p ${{ env.BASE_DIR }}/build/${{ matrix.distro }}'
+      - name: 'mkdir -p build'
+        run: 'mkdir -p build'
+
+      - name: 'mkdir -p build/${{ matrix.distro }}'
+        run: 'mkdir -p build/${{ matrix.distro }}'
+
+      - name: 'Synchronize cached writes to persistent storage'
+        run: 'sync'
+
+      - name: '⚙️ apt-get -y install podman'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install podman
+
+      - name: 'Build the container for ${{ matrix.distro }}'
+        run: >
+          podman build
+          --file "repos/monitoring-plugins/build/${{ matrix.distro }}/Containerfile"
+          --tag "lfmp-build-${{ matrix.distro }}"
+
+      - name: 'Find and Download Latest Version Artifact'
+        run: |
+          GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
+          ARTIFACT_NAME="version"
+
+          echo "Fetching latest artifact..."
+
+          # Fetch all artifacts and filter by name
+          ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
+            jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last // {}")
+
+          # Extract the download URL
+          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url // empty")
+
+          if [[ -z "$ARTIFACT_URL" ]]; then
+            echo "❌ No previous version artifact found. Exiting..."
+            exit 1
+          else
+            echo "✅ Downloading artifact from: $ARTIFACT_URL"
+            curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
+            mkdir -p version_artifact
+            unzip -o version.zip -d version_artifact
+            VERSION=$(cat version_artifact/version.txt)
+            echo "✅ Extracted version: $VERSION"
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          fi
 
       - name: 'Build the packages for ${{ matrix.distro }}'
-        shell: 'bash'
         run: >
+          podman run
+          --rm
+          --mount type=bind,source=build/${{ matrix.distro }},destination=/build,relabel=private
+          --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
+          "lfmp-build-${{ matrix.distro }}"
           /bin/bash -x
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
-          ${{ inputs.package-version || github.ref_name }}
+          ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
           ${{ inputs.check-plugin || '' }}
+          ${{ runner.arch }}
 
-
-  # this would not work on the Github-hosted runners, as each job is isolated there,
-  # but works when self-hosted (since there are no parallel jobs)
-  upload-outputs:
-    runs-on:
-      - 'windows-2025'
-    needs: # we want this to run after the build jobs
-      - 'build-packages'
-    # if: '${{ always() }}' # however, we want to upload the artifacts even if one of the job fails
-
-    steps:
-      - name: 'Upload build output as artifact for packaging later on'
+      - name: 'Upload build output'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
-          name: "monitoring-plugins-linux-${{ inputs.arch || 'X64' }}"
-          path: '${{ env.BASE_DIR }}/build/'
+          path: 'build/'
+          name: "lfmp-${{ env.VERSION }}.${{ matrix.distro }}.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"

@@ -23,6 +23,24 @@ get_vendor() {
     echo "$vendor"
 }
 
+githubarch2fpm() {
+    local arch
+
+    # Map the arch from Github to fpm
+    case "$1" in
+    X86)
+        arch="x86_64"
+        ;;
+    ARM64)
+        arch="aarch64"
+        ;;
+    *)
+        arch="$1"
+        ;;
+    esac
+    echo "$arch"
+}
+
 compile_plugins() {
     MONITORING_PLUGINS_DIR="$1"
     if [[ -z "$MONITORING_PLUGINS_DIR" ]]; then
