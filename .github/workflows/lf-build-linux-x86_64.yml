@@ -139,8 +139,8 @@ jobs:
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
           ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
-          ${{ inputs.check-plugin || '' }}
           ${{ runner.arch }}
+          ${{ inputs.check-plugin || '' }}
 
       - name: 'Upload build output'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0

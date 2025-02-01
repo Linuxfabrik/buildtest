@@ -108,11 +108,6 @@ prepare_fpm() {
         exit 1
     fi
 
-    if [[ "$PACKAGE_VERSION" == "main" ]]; then
-      # Replace PACKAGE_VERSION with the current day in format YYYYMMDD01 (Debian packages don't like "main")
-      PACKAGE_VERSION=$(date +"%Y%m%d01")
-    fi
-
     mkdir -p /tmp/fpm/check-plugins
     cd /tmp/fpm/check-plugins || exit 1
 

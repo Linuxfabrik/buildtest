@@ -84,11 +84,34 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install podman
 
-      - name: 'Build the container for ${{ matrix.distro }}'
-        run: >
-          podman build
-          --file "repos/monitoring-plugins/build/${{ matrix.distro }}/Containerfile"
-          --tag "lfmp-build-${{ matrix.distro }}"
+      - name: 'Build msx file for WiX'
+        shell: 'bash'
+        run: |
+          cat <<EOF > lfmp.wxs
+          <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+              <Package
+                  Name="Linuxfabrik Monitoring Plugins"
+                  Version="${{ env.VERSION }}"
+                  Manufacturer="Linuxfabrik GmbH, Zurich, Switzerland"
+                  UpgradeCode="bb340ae1-12a5-41d3-a27f-8677df3bdb2b"
+              >
+                  <StandardDirectory Id="CommonAppDataFolder">
+                      <Directory Id="Icinga2Dir" Name="icinga2">
+                          <Directory Id="UsrDir" Name="usr">
+                              <Directory Id="Lib64Dir" Name="lib64">
+                                  <Directory Id="NagiosDir" Name="nagios">
+                                      <Directory Id="PluginsDir" Name="plugins">
+                                          <!-- Automatically includes all files from the specified directory -->
+                                          <Files Include="C:\tmp\output\summary\check-plugins\**" />
+                                      </Directory>
+                                  </Directory>
+                              </Directory>
+                          </Directory>
+                      </Directory>
+                  </StandardDirectory>
+              </Package>
+          </Wix>
+          EOF
 
       - name: 'Find and Download Latest Version Artifact'
         run: |
@@ -129,8 +152,8 @@ jobs:
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
           ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
-          ${{ inputs.check-plugin || '' }}
           ${{ runner.arch }}
+          ${{ inputs.check-plugin || '' }}
 
       - name: 'Upload build output'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
