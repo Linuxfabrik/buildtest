@@ -139,7 +139,7 @@ jobs:
           /repos/monitoring-plugins/build/${{ matrix.distro }}/build.sh
           ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
-          ${{ runner.arch }}
+          ${{ runner.arch || 'x86_64' }}
           ${{ inputs.check-plugin || '' }}
 
       - name: 'Upload build output'

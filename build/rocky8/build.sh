@@ -13,7 +13,7 @@ if [[ -z "$PACKAGE_VERSION" || -z "$PACKAGE_ITERATION" ]]; then
     echo "  CHECK_PLUGIN: Optional. If you only want to compile a specific check plugin, specify its name, for example 'xml'."
     exit 1
 fi
-CHECK_PLUGIN="$3"
+CHECK_PLUGIN="$4"
 if [[ -z "$CHECK_PLUGIN" ]]; then
     CHECK_PLUGIN='*'
 fi
