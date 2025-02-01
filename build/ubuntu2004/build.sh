@@ -39,7 +39,7 @@ python3.9 -m pip install --requirement="$MONITORING_PLUGINS_DIR/requirements.txt
 compile_plugins "$MONITORING_PLUGINS_DIR" "$CHECK_PLUGIN"
 
 # prepare files for fpm
-prepare_fpm "$PACKAGE_VERSION" "$PACKAGE_ITERATION" "$(githubarch2fpm PACKAGE_ARCH)" "$MONITORING_PLUGINS_DIR"
+prepare_fpm "$PACKAGE_VERSION" "$PACKAGE_ITERATION" "$(githubarch2fpm $PACKAGE_ARCH)" "$MONITORING_PLUGINS_DIR"
 
 # create packages using fpm
 cd /tmp/fpm/check-plugins

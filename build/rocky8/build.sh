@@ -46,7 +46,7 @@ make --file /usr/share/selinux/devel/Makefile linuxfabrik-monitoring-plugins.pp
 \cp -a linuxfabrik-monitoring-plugins.pp /tmp/output/summary/check-plugins
 
 # prepare files for fpm
-prepare_fpm "$PACKAGE_VERSION" "$PACKAGE_ITERATION" "$(githubarch2fpm PACKAGE_ARCH)" "$MONITORING_PLUGINS_DIR"
+prepare_fpm "$PACKAGE_VERSION" "$PACKAGE_ITERATION" "$(githubarch2fpm $PACKAGE_ARCH)" "$MONITORING_PLUGINS_DIR"
 
 # create packages using fpm
 cd /tmp/fpm/check-plugins
