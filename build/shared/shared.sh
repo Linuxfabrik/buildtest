@@ -60,6 +60,7 @@ compile_plugins() {
             echo -e "\ncompiling $check..."
             nuitka \
                 --assume-yes-for-downloads \
+                --include-plugin-directory=../../lib \
                 --output-dir=/tmp/output/check-plugins/ \
                 --remove-output \
                 --standalone \
@@ -78,6 +79,7 @@ compile_plugins() {
                 echo -e "\ncompiling $notification..."
                 nuitka \
                     --assume-yes-for-downloads \
+                    --include-plugin-directory=../../lib \
                     --output-dir=/tmp/output/notification-plugins/ \
                     --remove-output \
                     --standalone \
