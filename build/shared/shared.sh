@@ -28,7 +28,7 @@ githubarch2fpm() {
 
     # Map the arch from Github to fpm
     case "$1" in
-    X86)
+    X64)
         arch="x86_64"
         ;;
     ARM64)
@@ -156,7 +156,7 @@ EOF
     cd /tmp/fpm/notification-plugins || exit 1
 
     cat > .fpm << EOF
---architecture all
+--architecture "$PACKAGE_ARCH"
 --chdir /tmp/output/summary/notification-plugins
 --description "Notification scripts for Icinga."
 --input-type dir
