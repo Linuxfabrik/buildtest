@@ -34,7 +34,7 @@ jobs:
           ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
           path: 'repos/lib'
 
-      - name: 'Debug Environment and Inputs'
+      - name: 'Debug Github Environment'
         shell: 'bash'
         run: >
           /bin/bash -x

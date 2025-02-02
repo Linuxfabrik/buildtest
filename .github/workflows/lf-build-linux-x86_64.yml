@@ -68,6 +68,12 @@ jobs:
           ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
           path: 'repos/lib'
 
+      - name: 'Debug Github Environment'
+        shell: 'bash'
+        run: >
+          /bin/bash -x
+          ./repos/monitoring-plugins/build/shared/debug.sh
+
       - name: 'mkdir -p build'
         run: 'mkdir -p build'
 
