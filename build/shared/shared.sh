@@ -58,7 +58,7 @@ compile_plugins() {
         check="$(basename "$dir")"
         if [ "$check" != "example" ]; then
             echo -e "\ncompiling $check..."
-            nuitka \
+            python -m nuitka \
                 --assume-yes-for-downloads \
                 --output-dir=/tmp/output/check-plugins/ \
                 --remove-output \
@@ -76,7 +76,7 @@ compile_plugins() {
             notification="$(basename "$dir")"
             if [ "$notification" != "example" ]; then
                 echo -e "\ncompiling $notification..."
-                nuitka \
+                python -m nuitka \
                     --assume-yes-for-downloads \
                     --output-dir=/tmp/output/notification-plugins/ \
                     --remove-output \
