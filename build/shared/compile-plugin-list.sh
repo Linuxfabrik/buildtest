@@ -10,11 +10,11 @@ PLUGIN_NAMES=$3  # a comma-separated list of plugin names (can be empty)
 if [[ -z "$PLUGIN_NAMES" ]]; then
     echo "No plugin list provided. Discovering all plugins..."
     # Find directories immediately under $PLUGIN_DIR/, extract their basenames, and join them with commas.
-    PLUGIN_NAMES=$(find $PLUGIN_DIR -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | paste -sd "," -)
+    PLUGIN_NAMES=$(find $PLUGIN_DIR -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort | paste -sd "," -)
 fi
 
 # Split the comma-separated list into an array.
-IFS=',' read -r -a plugins <<< "$INPUT_PLUGINS"
+IFS=',' read -r -a plugins <<< "$PLUGIN_NAMES"
 
 # Loop through each plugin in the list.
 mkdir -p $COMPILE_DIR
@@ -26,7 +26,7 @@ for plugin in "${plugins[@]}"; do
     fi
     echo "Processing plugin: $plugin"
     if [[ -d "$PLUGIN_DIR/$plugin" ]]; then
-        ./compile-using-nuitka "$PLUGIN_DIR/$plugin" "$plugin" "$COMPILE_DIR"
+        ./compile-using-nuitka "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
     else
         echo "Directory $PLUGIN_DIR/$plugin does not exist. Skipping."
         exit 1
