@@ -35,10 +35,18 @@ jobs:
           path: 'repos/lib'
 
       - name: 'Debug Github Environment'
+        run: |
+          python \
+            ./repos/monitoring-plugins/build/shared/debug.py
+
+      - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'
         run: >
           /bin/bash -x
-          ./repos/monitoring-plugins/build/shared/debug.sh
+          ./repos/monitoring-plugins/build/shared/get-latest-version.sh
+          $GITHUB_REPOSITORY
+          ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: 'Install python3.12'
         uses: 'actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38' # v5.4.0
@@ -56,6 +64,17 @@ jobs:
       - name: 'Verify Python installation'
         run: 'python.exe -m pip list'
 
+      - name: 'Compile the check plugins'
+        shell: 'bash'
+        run: >
+          /bin/bash -x
+          ./repos/monitoring-plugins/build/shared/compile-plugin-list.sh
+          ./repos/monitoring-plugins/check-plugins
+          ${{ inputs.check-plugins || '' }}
+          $RUNNER_TEMP/compiled
+          $RUNNER_TEMP/package-me
+
+
       - name: 'Configuring MSBuild in the workflow PATH for building .NET Framework applications'
         uses: 'microsoft/setup-msbuild@v2'
 
@@ -64,24 +83,6 @@ jobs:
 
       - name: 'wix --version'
         run: 'wix --version'
-
-      - name: 'Find and Download Latest Version Artifact'
-        shell: 'bash'
-        run: >
-          /bin/bash -x
-          ./repos/monitoring-plugins/build/shared/get-latest-version.sh
-          $GITHUB_REPOSITORY
-          ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 'Compile the check plugins'
-        shell: 'bash'
-        run: >
-          /bin/bash -x
-          ./repos/monitoring-plugins/build/shared/compile-check-plugins.sh
-          ./repos/monitoring-plugins/check-plugins
-          ${{ inputs.check-plugins || '' }}
-          $RUNNER_TEMP/compiled
-          $RUNNER_TEMP/package-me
 
       - name: 'Create the .wxs file for WiX'
         shell: 'bash'
