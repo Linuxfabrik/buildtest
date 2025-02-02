@@ -67,32 +67,20 @@ jobs:
 
       - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'
-        run: |
-          GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
-          ARTIFACT_NAME="version"
+        run: >
+          /bin/bash -x
+          all-get-latest-version.sh
+            ${{ github.repository_owner }}
+            ${{ github.event.repository.name }}
+            ${{ secrets.GITHUB_TOKEN }}
 
-          echo "Fetching latest artifact..."
-
-          # Fetch all artifacts and filter by name
-          ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
-            jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last // {}")
-
-          # Extract the download URL
-          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url // empty")
-
-          if [[ -z "$ARTIFACT_URL" ]]; then
-            echo "❌ No previous version artifact found. Exiting..."
-            exit 1
-          else
-            echo "✅ Downloading artifact from: $ARTIFACT_URL"
-            curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
-            mkdir -p version_artifact
-            unzip -o version.zip -d version_artifact
-            VERSION=$(cat version_artifact/version.txt)
-            echo "✅ Extracted version: $VERSION"
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
-          fi
+      - name: 'Create the .wxs file for WiX'
+        shell: 'bash'
+        run: >
+          /bin/bash -x
+          repos/monitoring-plugins/build/shared/windows-create-wxs.sh
+            lfmpx.wxs
+            ${{ env.VERSION }}
 
       - name: 'Build the packages for Windows'
         shell: 'bash'
@@ -100,10 +88,10 @@ jobs:
         run: >
           /bin/bash -x
           repos/monitoring-plugins/build/windows/build.sh
-          ${{ env.VERSION }}
-          ${{ inputs.package-iteration || '1' }}
-          ${{ runner.arch }}
-          ${{ inputs.check-plugin || '' }}
+            ${{ env.VERSION }}
+            ${{ inputs.package-iteration || '1' }}
+            ${{ runner.arch }}
+            ${{ inputs.check-plugin || '' }}
 
       - name: 'Upload build output (zip)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
@@ -114,8 +102,8 @@ jobs:
       - name: 'Compile .wxs into .msi using WiX v5+'
         run: >
           wix.exe build
-          -out C:\tmp\output\linuxfabrik-monitoring-plugins.msi
-          C:\tmp\lfmp.wxs
+            -out C:\tmp\output\linuxfabrik-monitoring-plugins.msi
+            C:\tmp\lfmp.wxs
         working-directory: '.'
 
       - name: 'Upload build output (msi)'
