@@ -7,10 +7,10 @@ on:
       #   description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
       #   required: false
       #   default: ''
-      check-plugin:
-        description: 'If you only want to compile a specific check plugin, specify its name, for example `cpu-usage`, otherwise leave empty to build all plugins.'
+      check-plugins:
+        description: 'Comma-separated list of check plugins to compile and package. Leave empty to build all plugins.'
         required: false
-        default: 'cpu-usage'
+        default: 'cpu-usage,scanrootkit'
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
@@ -73,6 +73,15 @@ jobs:
           $GITHUB_REPOSITORY
           ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 'Compile the check plugins'
+        shell: 'bash'
+          /bin/bash -x
+          ./repos/monitoring-plugins/build/shared/compile-check-plugins.sh
+          ./repos/monitoring-plugins/check-plugins
+          ${{ inputs.check-plugin || '' }}
+          $RUNNER_TEMP/compiled
+          $RUNNER_TEMP/package-me
+
       - name: 'Create the .wxs file for WiX'
         shell: 'bash'
         run: >
@@ -83,7 +92,6 @@ jobs:
 
       - name: 'Build the packages for Windows'
         shell: 'bash'
-        working-directory: "${{ github.workspace }}"
         run: >
           /bin/bash -x
           ./repos/monitoring-plugins/build/windows/build.sh
