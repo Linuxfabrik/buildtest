@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
+
 import os
 import sys
-import json
-import requests
 import zipfile
-from io import BytesIO
+
+import requests
 
 
 REPO = sys.argv[1]
@@ -18,7 +18,11 @@ headers = {
 }
 
 # Fetch all artifacts from the GitHub API
-response = requests.get(GH_API_URL, headers=headers)
+response = requests.get(
+    GH_API_URL,
+    headers=headers,
+    timeout=60,
+)
 if response.status_code != 200:
     print(f"❌ Failed to fetch artifacts. HTTP {response.status_code}: {response.text}")
     sys.exit(1)
@@ -44,7 +48,12 @@ if not artifact_url:
 else:
     print(f"✅ Downloading artifact from: {artifact_url}")
     # Download the artifact archive (ZIP)
-    download_response = requests.get(artifact_url, headers={"Authorization": f"Bearer {GITHUB_TOKEN}"}, stream=True)
+    download_response = requests.get(
+        artifact_url,
+        headers={"Authorization": f"Bearer {GITHUB_TOKEN}"},
+        stream=True,
+        timeout=60,
+    )
     if download_response.status_code != 200:
         print(f"❌ Failed to download artifact. HTTP {download_response.status_code}")
         sys.exit(1)
@@ -59,7 +68,7 @@ else:
 
     # Create extraction directory
     extract_dir = os.path.join(
-        os.environ.get('RUNNER_TEMP')
+        os.environ.get('RUNNER_TEMP'),
         "version_artifact",
     )
     os.makedirs(extract_dir, exist_ok=True)

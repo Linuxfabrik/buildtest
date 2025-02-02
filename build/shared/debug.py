@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import os
 
 # List of environment variables to print
@@ -143,4 +144,3 @@ for var in env_vars:
 # + RUNNER_OS=Windows
 # + RUNNER_TEMP='D:\a\_temp'
 # + RUNNER_TOOL_CACHE='C:\hostedtoolcache\windows'
-
