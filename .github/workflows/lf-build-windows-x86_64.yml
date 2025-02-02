@@ -66,6 +66,7 @@ jobs:
         run: 'wix --version'
 
       - name: 'Find and Download Latest Version Artifact'
+        shell: 'bash'
         run: |
           GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
           ARTIFACT_NAME="version"
@@ -94,6 +95,7 @@ jobs:
           fi
 
       - name: 'Build the packages for Windows'
+        shell: 'bash'
         run: >
           /bin/bash -x
           /repos/monitoring-plugins/build/windows/build.sh
