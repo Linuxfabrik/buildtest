@@ -26,10 +26,10 @@ python -m nuitka \
     --assume-yes-for-downloads \
     --include-plugin-directory=$LIB_DIR \
     --output-dir=$OUTPUT_DIR/ \
-    --remove-output \
     --standalone \
     "$ADDITIONAL_PARAMS" \
     "$PLUGIN_DIR/$PLUGIN"
+#     --remove-output \
 
 if [ -e "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" ]; then
     # On Linux, compiled files have the ".bin" extension.
