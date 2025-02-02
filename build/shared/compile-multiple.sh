@@ -27,7 +27,7 @@ for plugin in "${plugins[@]}"; do
     echo "Processing plugin: $plugin"
     if [[ -d "$PLUGIN_DIR/$plugin" ]]; then
         echo $(pwd)
-        ./compile-one.sh "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
+        $(dirname $0)/compile-one.sh "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
     else
         echo "Directory $PLUGIN_DIR/$plugin does not exist. Skipping."
         exit 1
