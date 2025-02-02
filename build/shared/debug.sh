@@ -6,7 +6,7 @@ set -e -x
 # Use printenv to list the environment variables, and pipe through sort.
 printenv | sort
 
-echo $(uname -m)
+echo $(uname -a)
 
 
 

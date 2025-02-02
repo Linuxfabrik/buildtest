@@ -87,7 +87,7 @@ jobs:
         shell: 'bash'
         run: >
           /bin/bash
-          ./repos/monitoring-plugins/build/shared/windows-create-wxs.sh
+          ./repos/monitoring-plugins/build/shared/create-wxs.sh
           lfmpx.wxs
           ${{ env.VERSION }}
 
