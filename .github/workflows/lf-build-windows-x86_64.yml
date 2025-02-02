@@ -58,8 +58,8 @@ jobs:
       - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'
         run: >
-          python
-          ./repos/monitoring-plugins/build/shared/get-latest-version.py
+          /bin/bash -x
+          ./repos/monitoring-plugins/build/shared/get-latest-version.sh
           $GITHUB_REPOSITORY
           ${{ secrets.GITHUB_TOKEN }}
 
