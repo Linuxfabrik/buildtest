@@ -23,7 +23,7 @@ if [[ -z "$ARTIFACT_URL" ]]; then
     exit 1
 else
     echo "✅ Downloading artifact from: $ARTIFACT_URL"
-    curl -L -o version.zip -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ARTIFACT_URL"
+    curl -L -o version.zip -H "Authorization: Bearer $GITHUB_TOKEN" "$ARTIFACT_URL"
     mkdir -p version_artifact
     unzip -o version.zip -d version_artifact
     VERSION=$(cat version_artifact/version.txt)
