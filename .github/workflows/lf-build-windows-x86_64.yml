@@ -53,8 +53,8 @@ jobs:
       # install 3rd party libraries for all check plugins
       - run: 'python.exe -m pip install --requirement ${{ github.workspace }}\repos\monitoring-plugins\requirements-windows.txt --require-hashes'
 
-      # info in case of errors
-      - run: 'python.exe -m pip list'
+      - name: 'Verify Python installation'
+        run: 'python.exe -m pip list'
 
       - name: 'Configuring MSBuild in the workflow PATH for building .NET Framework applications'
         uses: 'microsoft/setup-msbuild@v2'
