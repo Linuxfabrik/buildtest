@@ -6,7 +6,7 @@ set -e -x
 # Use printenv to list the environment variables, and pipe through sort.
 printenv | sort
 
-echo $(cat /etc/os-release)
+echo $(uname -m)
 
 
 
