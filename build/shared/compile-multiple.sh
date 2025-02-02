@@ -34,6 +34,7 @@ for plugin in "${plugins[@]}"; do
     fi
 done
 
+echo $(find $COMPILE_DIR)
 \cp --archive --no-clobber $COMPILE_DIR/*.dist/* $COMPILE_DIR
 
 exit 1
