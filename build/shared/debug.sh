@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # This script prints all environment variables in alphabetical order.
-set -e +x
+set -e -x
 
 # Use printenv to list the environment variables, and pipe through sort.
 printenv | sort

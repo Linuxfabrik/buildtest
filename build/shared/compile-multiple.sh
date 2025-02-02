@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e +x
+set -e -x
 
 COMPILE_DIR=$1
 PLUGIN_DIR=$2

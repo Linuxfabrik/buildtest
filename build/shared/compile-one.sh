@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e +x
+set -e -x
 
 PLUGIN_DIR=$1
 PLUGIN_NAME=$2
@@ -14,4 +14,8 @@ python -m nuitka \
     --remove-output \
     --standalone \
     "$PLUGIN_DIR/$PLUGIN"
-mv "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME"
+if [[ -e "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" ]]; then
+    # On Linux, files have the ".bin" extension.
+    # On Windows, files are already named ".exe".
+    mv "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME"
+fi

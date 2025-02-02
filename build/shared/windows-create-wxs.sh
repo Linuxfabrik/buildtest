@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e +x
+set -e -x
 
 WXS_FILE="$1"
 PACKAGE_VERSION=$2
