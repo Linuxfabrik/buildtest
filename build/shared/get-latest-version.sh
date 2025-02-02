@@ -2,11 +2,10 @@
 
 set -e
 
-REPO_OWNER=$1
-REPO_NAME=$2
-GITHUB_TOKEN=$3
+REPO=$1
+GITHUB_TOKEN=$2
 
-GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
+GH_API_URL="https://api.github.com/repos/$REPO/actions/artifacts"
 ARTIFACT_NAME="version"
 
 echo "Fetching latest version.txt..."
@@ -29,5 +28,6 @@ else
     unzip -o version.zip -d version_artifact
     VERSION=$(cat version_artifact/version.txt)
     echo "✅ Extracted version: $VERSION"
+    # Append an environment variable for later steps
     echo "VERSION=$VERSION" >> $GITHUB_ENV
 fi

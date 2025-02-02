@@ -70,8 +70,7 @@ jobs:
         run: >
           /bin/bash -x
           ./repos/monitoring-plugins/build/shared/get-latest-version.sh
-          $GITHUB_REPOSITORY_OWNER
-          ${{ github.event.repository.name }}
+          $GITHUB_REPOSITORY
           ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Create the .wxs file for WiX'
