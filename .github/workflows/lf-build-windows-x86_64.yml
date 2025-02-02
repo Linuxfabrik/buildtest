@@ -23,6 +23,7 @@ jobs:
       - 'windows-2025'
     steps:
       - name: 'Debug Environment and Inputs'
+        shell: 'bash'
         run: >
           /bin/bash -x
           ./repos/monitoring-plugins/build/shared/debug.sh
