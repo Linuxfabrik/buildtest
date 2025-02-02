@@ -52,8 +52,8 @@ jobs:
 
       - name: 'Debug Github Environment'
         run: >
-          python
-          ./repos/monitoring-plugins/build/shared/debug.py
+          /bin/bash -x
+          ./repos/monitoring-plugins/build/shared/debug.sh
 
       - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'
@@ -69,10 +69,9 @@ jobs:
         run: >
           /bin/bash -x
           ./repos/monitoring-plugins/build/shared/compile-plugin-list.sh
-          ./repos/monitoring-plugins/check-plugins
-          ${{ inputs.check-plugins || '' }}
           $RUNNER_TEMP/compiled
-          $RUNNER_TEMP/package-me
+          ./repos/monitoring-plugins/check-plugins
+          ${{ inputs.check-plugins }}
 
 
       - name: 'Configuring MSBuild in the workflow PATH for building .NET Framework applications'
