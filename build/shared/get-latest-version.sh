@@ -9,7 +9,7 @@ GITHUB_TOKEN=$3
 GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
 ARTIFACT_NAME="version"
 
-echo "Fetching latest artifact..."
+echo "Fetching latest version.txt..."
 
 # Fetch all artifacts and filter by name
 ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
