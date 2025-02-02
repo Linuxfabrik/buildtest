@@ -22,12 +22,6 @@ jobs:
     runs-on:
       - 'windows-2025'
     steps:
-      - name: 'Debug Environment and Inputs'
-        shell: 'bash'
-        run: >
-          /bin/bash -x
-          $GITHUB_WORKSPACE/repos/monitoring-plugins/build/shared/debug.sh
-
       - name: 'git checkout https://github.com/Linuxfabrik/monitoring-plugins'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:
@@ -39,6 +33,12 @@ jobs:
           repository: 'Linuxfabrik/lib'
           ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
           path: 'repos/lib'
+
+      - name: 'Debug Environment and Inputs'
+        shell: 'bash'
+        run: >
+          /bin/bash -x
+          ./repos/monitoring-plugins/build/shared/debug.sh
 
       - name: 'Install python3.12'
         uses: 'actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38' # v5.4.0
