@@ -13,8 +13,8 @@ echo "Fetching latest artifact..."
 
 # Fetch all artifacts and filter by name
 ARTIFACT_INFO=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
--H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
-jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last // {}")
+    -H "Accept: application/vnd.github.v3+json" "$GH_API_URL" | \
+    jq -r ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last // {}")
 
 # Extract the download URL
 ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r ".archive_download_url // empty")

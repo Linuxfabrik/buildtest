@@ -67,12 +67,13 @@ jobs:
 
       - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'
+        working-directory: "${{ github.workspace }}"
         run: >
           /bin/bash -x
-          all-get-latest-version.sh
-            ${{ github.repository_owner }}
-            ${{ github.event.repository.name }}
-            ${{ secrets.GITHUB_TOKEN }}
+            repos/monitoring-plugins/build/shared/all-get-latest-version.sh
+              ${{ github.repository_owner }}
+              ${{ github.event.repository.name }}
+              ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Create the .wxs file for WiX'
         shell: 'bash'
