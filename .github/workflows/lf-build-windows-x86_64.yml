@@ -51,9 +51,9 @@ jobs:
         run: 'python.exe -m pip list'
 
       - name: 'Debug Github Environment'
-        run: |
-          python \
-            ./repos/monitoring-plugins/build/shared/debug.py
+        run: >
+          python
+          ./repos/monitoring-plugins/build/shared/debug.py
 
       - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'

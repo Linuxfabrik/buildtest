@@ -45,7 +45,7 @@ env_vars = [
     "RUNNER_NAME",
     "RUNNER_OS",
     "RUNNER_TEMP",
-    "RUNNER_TOOL_CACHE"
+    "RUNNER_TOOL_CACHE",
 ]
 
 for var in env_vars:
