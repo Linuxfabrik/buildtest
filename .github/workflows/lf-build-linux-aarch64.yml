@@ -24,11 +24,10 @@ on:
 permissions:
   contents: 'read'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   set-matrix:
     runs-on:
-      - 'ubuntu-24.04-arm'
+      - 'ubuntu-24.04-arm'  # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
     outputs:
       matrix: '${{ steps.generate-matrix.outputs.matrix }}'
     steps:
