@@ -40,10 +40,10 @@ jobs:
           ./repos/monitoring-plugins/build/shared/debug.sh
 
 
-      - name: 'Install python3.12'
+      - name: 'Install python3.13'
         uses: 'actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38' # v5.4.0
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - run: 'python.exe -m pip install --upgrade pip wheel setuptools'
 
