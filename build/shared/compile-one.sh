@@ -23,6 +23,7 @@ echo "Compiling $PLUGIN_NAME..."
 PLUGIN="$PLUGIN_NAME/$PLUGIN_NAME"
 python -m nuitka \
     --assume-yes-for-downloads \
+    --include-plugin-directory=../lib \
     --output-dir=$OUTPUT_DIR/ \
     --remove-output \
     --standalone \
