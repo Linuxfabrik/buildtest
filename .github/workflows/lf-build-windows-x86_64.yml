@@ -69,7 +69,7 @@ jobs:
         shell: 'bash'
         run: >
           /bin/bash -x
-          ./repos/monitoring-plugins/build/shared/compile-plugin-list.sh
+          ./repos/monitoring-plugins/build/shared/compile-multiple.sh
           $RUNNER_TEMP/compiled
           ./repos/monitoring-plugins/check-plugins
           ${{ inputs.check-plugins }}

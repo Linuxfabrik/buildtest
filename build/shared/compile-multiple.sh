@@ -26,7 +26,8 @@ for plugin in "${plugins[@]}"; do
     fi
     echo "Processing plugin: $plugin"
     if [[ -d "$PLUGIN_DIR/$plugin" ]]; then
-        ./compile-using-nuitka.sh "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
+        pwd
+        ./compile-one.sh "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
     else
         echo "Directory $PLUGIN_DIR/$plugin does not exist. Skipping."
         exit 1
