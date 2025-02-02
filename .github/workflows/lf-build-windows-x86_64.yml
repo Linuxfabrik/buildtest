@@ -96,9 +96,10 @@ jobs:
 
       - name: 'Build the packages for Windows'
         shell: 'bash'
+        working-directory: "${{ github.workspace }}"
         run: >
           /bin/bash -x
-          ${{ github.workspace }}/repos/monitoring-plugins/build/windows/build.sh
+          repos/monitoring-plugins/build/windows/build.sh
           ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
           ${{ runner.arch }}
