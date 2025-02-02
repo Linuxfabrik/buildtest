@@ -75,6 +75,7 @@ jobs:
 
       - name: 'Compile the check plugins'
         shell: 'bash'
+        run: >
           /bin/bash -x
           ./repos/monitoring-plugins/build/shared/compile-check-plugins.sh
           ./repos/monitoring-plugins/check-plugins
