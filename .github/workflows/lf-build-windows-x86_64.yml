@@ -78,7 +78,7 @@ jobs:
         shell: 'bash'
         run: >
           /bin/bash -x
-          repos/monitoring-plugins/build/shared/windows-create-wxs.sh
+          ./repos/monitoring-plugins/build/shared/windows-create-wxs.sh
           lfmpx.wxs
           ${{ env.VERSION }}
 
@@ -87,7 +87,7 @@ jobs:
         working-directory: "${{ github.workspace }}"
         run: >
           /bin/bash -x
-          repos/monitoring-plugins/build/windows/build.sh
+          ./repos/monitoring-plugins/build/windows/build.sh
           ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
           ${{ runner.arch }}
