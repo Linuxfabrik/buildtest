@@ -8,7 +8,7 @@ on:
       #   required: false
       #   default: ''
       package-iteration:
-        description: 'The iteration to give to the package. RPM calls this the ‘release’. Debian calls this ‘debian_revision’'
+        description: 'The iteration to give to the package. RPM calls this the ‘release’. Debian calls this ‘debian_revision’.'
         required: false
         default: '1'
       check-plugin:

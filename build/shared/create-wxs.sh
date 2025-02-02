@@ -6,19 +6,6 @@ WXS_FILE="$1"
 PACKAGE_VERSION=$2
 DIST_FOLDER=$3
 
-# Extract the drive letter (character after the initial slash)
-drive="${DIST_FOLDER:1:1}"
-
-# Extract the rest of the path (everything after the drive letter)
-rest="${DIST_FOLDER:2}"
-
-# Replace all forward slashes with backslashes in the rest of the path
-windows_rest="${rest//\//\\}"
-
-# Construct the Windows-style path (convert drive letter to uppercase)
-windows_path="${drive^^}:$windows_rest"
-
-
 cat <<EOF > $WXS_FILE
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package
@@ -34,7 +21,7 @@ cat <<EOF > $WXS_FILE
                       <Directory Id="NagiosDir" Name="nagios">
                           <Directory Id="PluginsDir" Name="plugins">
                               <!-- Automatically includes all files from the specified directory -->
-                              <Files Include="$windows_path\**" />
+                              <Files Include="$DIST_FOLDER\**" />
                           </Directory>
                       </Directory>
                   </Directory>
@@ -44,3 +31,4 @@ cat <<EOF > $WXS_FILE
   </Package>
 </Wix>
 EOF
+echo $(cat $WXS_FILE)
