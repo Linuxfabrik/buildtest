@@ -98,7 +98,7 @@ jobs:
         shell: 'bash'
         run: >
           /bin/bash -x
-          /repos/monitoring-plugins/build/windows/build.sh
+          ${{ github.workspace }}/repos/monitoring-plugins/build/windows/build.sh
           ${{ env.VERSION }}
           ${{ inputs.package-iteration || '1' }}
           ${{ runner.arch }}
