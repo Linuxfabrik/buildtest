@@ -7,7 +7,7 @@ DEST="$2"
 
 mkdir -p "$DEST"
 
-for file in $SRC; do
+for file in "$SRC"/*; do
     echo "Merging files from $file into $DEST"
-    \cp -r "$file"* "$DEST"/
+    \cp -r "$file"/* "$DEST"/
 done

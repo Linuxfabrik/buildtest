@@ -7,7 +7,6 @@ set -e -x
 printenv | sort
 
 echo $(uname -a)
-rsync --help
 
 
 # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
