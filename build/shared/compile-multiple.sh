@@ -3,8 +3,9 @@
 set -e -x
 
 COMPILE_DIR=$1
-PLUGIN_DIR=$2
-PLUGIN_NAMES=$3  # a comma-separated list of plugin names (can be empty)
+LIB_DIR=$2
+PLUGIN_DIR=$3
+PLUGIN_NAMES=$4  # a comma-separated list of plugin names (can be empty)
 
 # If PLUGIN_NAMES is empty, find all plugin directories under $PLUGIN_DIR/ and create a comma-separated list.
 if [[ -z "$PLUGIN_NAMES" ]]; then
@@ -27,7 +28,7 @@ for plugin in "${plugins[@]}"; do
     echo "Processing plugin: $plugin"
     if [[ -d "$PLUGIN_DIR/$plugin" ]]; then
         echo $(pwd)
-        $(dirname $0)/compile-one.sh "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
+        $(dirname $0)/compile-one.sh "$LIB_DIR" "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
     else
         echo "Directory $PLUGIN_DIR/$plugin does not exist. Skipping."
         exit 1

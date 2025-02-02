@@ -2,9 +2,10 @@
 
 set -e -x
 
-PLUGIN_DIR=$1
-PLUGIN_NAME=$2
-OUTPUT_DIR=$3
+LIB_DIR=$1
+PLUGIN_DIR=$2
+PLUGIN_NAME=$3
+OUTPUT_DIR=$4
 
 if [ "$PLUGIN_NAME" == "example" ]; then
     echo "Ignoring '$PLUGIN_NAME'"
@@ -23,7 +24,7 @@ echo "Compiling $PLUGIN_NAME..."
 PLUGIN="$PLUGIN_NAME/$PLUGIN_NAME"
 python -m nuitka \
     --assume-yes-for-downloads \
-    --include-plugin-directory=../lib \
+    --include-plugin-directory=$LIB_DIR \
     --output-dir=$OUTPUT_DIR/ \
     --remove-output \
     --standalone \

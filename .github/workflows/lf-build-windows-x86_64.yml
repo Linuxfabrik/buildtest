@@ -74,6 +74,7 @@ jobs:
           /bin/bash
           ./repos/monitoring-plugins/build/shared/compile-multiple.sh
           $RUNNER_TEMP/compiled
+          ./repos/lib
           ./repos/monitoring-plugins/check-plugins
           ${{ inputs.check-plugins }}
 
