@@ -48,11 +48,7 @@ env_vars = [
     "RUNNER_TOOL_CACHE"
 ]
 
-def main():
-    for var in env_vars:
-        # os.environ.get(var) returns None if the variable isn't set
-        value = os.environ.get(var)
-        print(f"{var}={value}")
-
-if __name__ == "__main__":
-    main()
+for var in env_vars:
+    # os.environ.get(var) returns None if the variable isn't set
+    value = os.environ.get(var)
+    print(f"{var}={value}")
