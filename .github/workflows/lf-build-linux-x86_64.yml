@@ -90,6 +90,7 @@ jobs:
       - name: 'Run the container for ${{ matrix.distro }}'
         run: >
           podman run
+          --name "lfmp-build-${{ matrix.distro }}"
           --detach
           --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
           --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
