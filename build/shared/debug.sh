@@ -8,11 +8,6 @@ printenv | sort
 
 echo $(uname -a)
 
-echo check-plugin="${{ inputs.check-plugin }}"
-echo lib-repo-ref="${{ inputs.lib-repo-ref }}"
-echo package-iteration="${{ inputs.package-iteration }}"
-echo distros="${{ inputs.distros }}"
-
 
 # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
 

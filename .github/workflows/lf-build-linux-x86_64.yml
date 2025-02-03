@@ -3,14 +3,6 @@ name: 'Linuxfabrik: Build Linux (x86_64)'
 on:
   workflow_dispatch:
     inputs:
-      lib-repo-ref:
-        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
-        required: false
-        default: ''
-      package-iteration:
-        description: 'The iteration to give to the package.'
-        required: false
-        default: '1'
       check-plugins:
         description: 'Comma-separated list of check plugins to compile and package. Leave empty to build all plugins.'
         required: false
@@ -19,6 +11,14 @@ on:
         description: 'Comma-separated list of operating systems to build on. Supported: `debian11,debian12,rocky8,rocky9,ubuntu2004,ubuntu2204,ubuntu2404`.'
         required: false
         default: 'rocky9'
+      lib-repo-ref:
+        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
+        required: false
+        default: ''
+      package-iteration:
+        description: 'The iteration to give to the package.'
+        required: false
+        default: '1'
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
@@ -47,6 +47,14 @@ jobs:
       matrix:
         distro: '${{ fromJson(needs.set-matrix.outputs.matrix).distros }}'
     steps:
+      - name: 'Debug Inputs'
+        run: >
+          echo
+          check-plugins=${{ inputs.check-plugins }}
+          lib-repo-ref=${{ inputs.lib-repo-ref }}
+          package-iteration=${{ inputs.package-iteration }}
+          distros=${{ inputs.distros }}
+
       - name: 'git checkout https://github.com/Linuxfabrik/monitoring-plugins'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:

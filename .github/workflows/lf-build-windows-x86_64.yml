@@ -3,6 +3,10 @@ name: 'Linuxfabrik: Build Windows (x86_64)'
 on:
   workflow_dispatch:
     inputs:
+      check-plugins:
+        description: 'Comma-separated list of check plugins to compile and package. Leave empty to build all plugins.'
+        required: false
+        default: 'cpu-usage,scanrootkit'
       lib-repo-ref:
         description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
         required: false
@@ -11,10 +15,6 @@ on:
         description: 'The iteration to give to the package.'
         required: false
         default: '1'
-      check-plugins:
-        description: 'Comma-separated list of check plugins to compile and package. Leave empty to build all plugins.'
-        required: false
-        default: 'cpu-usage,scanrootkit'
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
@@ -25,6 +25,14 @@ jobs:
     runs-on:
       - 'windows-2025'  # https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
     steps:
+      - name: 'Debug Inputs'
+        shell: 'bash'
+        run: >
+          echo
+          check-plugins=${{ inputs.check-plugins }}
+          lib-repo-ref=${{ inputs.lib-repo-ref }}
+          package-iteration=${{ inputs.package-iteration }}
+
       - name: 'git checkout https://github.com/Linuxfabrik/monitoring-plugins'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
         with:
@@ -59,6 +67,7 @@ jobs:
 
       - name: 'Verify Python installation'
         run: 'python.exe -m pip list'
+
 
       - name: 'Find and Download Latest Version Artifact'
         shell: 'bash'
