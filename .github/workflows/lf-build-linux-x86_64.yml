@@ -84,6 +84,9 @@ jobs:
           --file "repos/monitoring-plugins/build/containerfiles/${{ matrix.distro }}"
           --tag "lfmp-build-${{ matrix.distro }}"
 
+      - name: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
+        run: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
+
       - name: 'Run the container for ${{ matrix.distro }}'
         run: >
           podman run
