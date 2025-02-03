@@ -20,9 +20,15 @@ if uname -a | grep -q "_NT"; then
     ADDITIONAL_PARAMS="--msvc=latest"
 fi
 
-echo "Compiling $PLUGIN_NAME..."
+PYTHON=python
+if ! command -v $PYTHON 2>&1 >/dev/null
+then
+    PYTHON=/opt/venv/bin/python
+fi
+
+echo "Compiling $PLUGIN_NAME using $PYTHON"
 PLUGIN="$PLUGIN_NAME/$PLUGIN_NAME"
-python -m nuitka \
+$PYTHON -m nuitka \
     --assume-yes-for-downloads \
     --include-plugin-directory="$LIB_DIR" \
     --output-dir="$OUTPUT_DIR"/ \
