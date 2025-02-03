@@ -11,14 +11,14 @@ PLUGIN_NAMES=$4  # a comma-separated list of plugin names (can be empty)
 if [[ -z "$PLUGIN_NAMES" ]]; then
     echo "No plugin list provided. Discovering all plugins..."
     # Find directories immediately under $PLUGIN_DIR/, extract their basenames, and join them with commas.
-    PLUGIN_NAMES=$(find $PLUGIN_DIR -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort | paste -sd "," -)
+    PLUGIN_NAMES=$(find "$PLUGIN_DIR" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort | paste -sd "," -)
 fi
 
 # Split the comma-separated list into an array.
 IFS=',' read -r -a plugins <<< "$PLUGIN_NAMES"
 
 # Loop through each plugin in the list.
-mkdir -p $COMPILE_DIR
+mkdir -p "$COMPILE_DIR"
 for plugin in "${plugins[@]}"; do
     # Trim any accidental whitespace.
     plugin=$(echo "$plugin" | xargs)
@@ -28,7 +28,7 @@ for plugin in "${plugins[@]}"; do
     echo "Processing plugin: $plugin"
     if [[ -d "$PLUGIN_DIR/$plugin" ]]; then
         echo $(pwd)
-        $(dirname $0)/compile-one.sh "$LIB_DIR" "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
+        $(dirname "$0")/compile-one.sh "$LIB_DIR" "$PLUGIN_DIR" "$plugin" "$COMPILE_DIR"
     else
         echo "Directory $PLUGIN_DIR/$plugin does not exist. Skipping."
         exit 1

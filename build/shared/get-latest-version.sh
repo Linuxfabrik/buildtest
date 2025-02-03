@@ -29,5 +29,5 @@ else
     VERSION=$(cat version_artifact/version.txt)
     echo "✅ Extracted version: $VERSION"
     # Append an environment variable for later steps
-    echo "VERSION=$VERSION" >> $GITHUB_ENV
+    echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 fi

@@ -7,9 +7,7 @@ DEST="$2"
 
 mkdir -p "$DEST"
 
-cd $SRC
+cd "$SRC"
 for dir in */*; do
-    echo "dir: $dir"
-    echo cp -rv $dir* "$DEST"/
     \cp --recursive --verbose "$dir"* "$DEST"/
 done

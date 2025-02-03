@@ -24,8 +24,8 @@ echo "Compiling $PLUGIN_NAME..."
 PLUGIN="$PLUGIN_NAME/$PLUGIN_NAME"
 python -m nuitka \
     --assume-yes-for-downloads \
-    --include-plugin-directory=$LIB_DIR \
-    --output-dir=$OUTPUT_DIR/ \
+    --include-plugin-directory="$LIB_DIR" \
+    --output-dir="$OUTPUT_DIR"/ \
     --standalone \
     "$ADDITIONAL_PARAMS" \
     "$PLUGIN_DIR/$PLUGIN"

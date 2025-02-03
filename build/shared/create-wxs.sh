@@ -6,7 +6,7 @@ WXS_FILE="$1"
 PACKAGE_VERSION=$2
 DIST_FOLDER=$3
 
-cat <<EOF > $WXS_FILE
+cat <<EOF > "$WXS_FILE"
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package
       Name="Linuxfabrik Monitoring Plugins"
@@ -14,6 +14,7 @@ cat <<EOF > $WXS_FILE
       Manufacturer="Linuxfabrik GmbH"
       UpgradeCode="bb340ae1-12a5-41d3-a27f-8677df3bdb2b"
   >
+      <MediaTemplate EmbedCab="yes" />
       <StandardDirectory Id="CommonAppDataFolder">
           <Directory Id="Icinga2Dir" Name="icinga2">
               <Directory Id="UsrDir" Name="usr">
@@ -31,4 +32,4 @@ cat <<EOF > $WXS_FILE
   </Package>
 </Wix>
 EOF
-echo $(cat $WXS_FILE)
+echo $(cat "$WXS_FILE")
