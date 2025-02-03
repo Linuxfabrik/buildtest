@@ -3,14 +3,14 @@ name: 'Linuxfabrik: Build Windows (x86_64)'
 on:
   workflow_dispatch:
     inputs:
-      # lib-repo-ref:
-      #   description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
-      #   required: false
-      #   default: ''
-      # package-iteration:
-      #   description: 'The iteration to give to the package.'
-      #   required: false
-      #   default: '1'
+      lib-repo-ref:
+        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
+        required: false
+        default: ''
+      package-iteration:
+        description: 'The iteration to give to the package.'
+        required: false
+        default: '1'
       check-plugins:
         description: 'Comma-separated list of check plugins to compile and package. Leave empty to build all plugins.'
         required: false
@@ -123,4 +123,4 @@ jobs:
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
           path: '${{ runner.temp }}\linuxfabrik-monitoring-plugins.msi'
-          name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}.msi"
+          name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.windows.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}.msi"

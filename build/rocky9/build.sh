@@ -33,7 +33,6 @@ fi
 . "$BUILD_SHARED_DIR/shared.sh"
 
 source /opt/venv/bin/activate
-
 python3 --version
 python3 -m pip install --requirement="$MONITORING_PLUGINS_DIR/requirements.txt" --require-hashes
 python3 -m pip list
