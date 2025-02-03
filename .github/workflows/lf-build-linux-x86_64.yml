@@ -87,19 +87,6 @@ jobs:
       - name: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
         run: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
 
-      - name: 'Run the container lfmp-build-${{ matrix.distro }}'
-        run: >
-          podman run
-          --name "lfmp-build-${{ matrix.distro }}"
-          --detach
-          --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
-          --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
-          "lfmp-build-${{ matrix.distro }}"
-
-      - name: 'podman ps'
-        run: >
-          podman ps
-
 
       - name: 'Find and Download Latest Version Artifact'
         run: >
@@ -109,16 +96,19 @@ jobs:
           ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: 'Compile the check plugins'
+      - name: 'Run the container lfmp-build-${{ matrix.distro }}'
         run: >
-          podman exec
+          podman run
+          --rm
+          --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
+          --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash
-          ./repos/monitoring-plugins/build/shared/compile-multiple.sh
-          $RUNNER_TEMP/${{ matrix.distro }}/compiled
-          ./repos/lib
-          ./repos/monitoring-plugins/check-plugins
-          ${{ inputs.check-plugins }}
+          "./repos/monitoring-plugins/build/shared/compile-multiple.sh
+          /compiled
+          /repos/lib
+          /repos/monitoring-plugins/check-plugins
+          ${{ inputs.check-plugins }}"
 
 
       # - name: 'Upload build output'
