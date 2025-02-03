@@ -120,8 +120,10 @@ jobs:
           $RUNNER_TEMP/${{ matrix.distro }}/dist
 
 
+      - name: 'Install fpm'
+
       - name: 'Upload build output'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
-          path: '$RUNNER_TEMP/${{ matrix.distro }}/dist'
+          path: '${{ runner.temp }}/${{ matrix.distro }}/dist/*'
           name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.${{ matrix.distro }}.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"
