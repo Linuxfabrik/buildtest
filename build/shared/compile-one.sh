@@ -17,7 +17,7 @@ if uname -a | grep -q "_NT"; then
         echo "Ignoring '$PLUGIN_NAME'"
         exit 0
     fi
-    ADDITIONAL_PARAMS="--msvc=latest"
+    ADDITIONAL_PARAMS="--include-plugin-directory=$LIB_DIR --msvc=latest"
 fi
 
 PYTHON=python
@@ -29,11 +29,10 @@ echo "Compiling $PLUGIN_NAME using $PYTHON"
 PLUGIN="$PLUGIN_NAME/$PLUGIN_NAME"
 $PYTHON -m nuitka \
     --assume-yes-for-downloads \
-    --include-plugin-directory="$LIB_DIR" \
     --output-dir="$OUTPUT_DIR"/ \
     --standalone \
     $ADDITIONAL_PARAMS \
-    "$PLUGIN_DIR/$PLUGIN"
+    $PLUGIN_DIR/$PLUGIN
 #     --remove-output \
 
 if [ -e "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" ]; then
