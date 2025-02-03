@@ -7,7 +7,9 @@ DEST="$2"
 
 mkdir -p "$DEST"
 
-for file in "$SRC"/*; do
-    echo "Merging files from $file into $DEST"
-    \cp -r "$file"/* "$DEST"/
+cd $SRC
+for dir in */*; do
+    echo "dir: $dir"
+    echo cp -rv $dir* "$DEST"/
+    \cp --recursive --verbose "$dir"* "$DEST"/
 done

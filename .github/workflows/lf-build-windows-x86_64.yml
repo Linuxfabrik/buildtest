@@ -118,6 +118,7 @@ jobs:
           -defaultcompressionlevel high
           ${{ runner.temp }}\lfmpx.wxs
           -out ${{ runner.temp }}\linuxfabrik-monitoring-plugins.msi
+        working-directory: '.'
 
       - name: 'Upload build output (msi)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
