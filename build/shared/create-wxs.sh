@@ -11,7 +11,7 @@ cat <<EOF > $WXS_FILE
   <Package
       Name="Linuxfabrik Monitoring Plugins"
       Version="$PACKAGE_VERSION"
-      Manufacturer="Linuxfabrik GmbH, Zurich, Switzerland"
+      Manufacturer="Linuxfabrik GmbH"
       UpgradeCode="bb340ae1-12a5-41d3-a27f-8677df3bdb2b"
   >
       <StandardDirectory Id="CommonAppDataFolder">
