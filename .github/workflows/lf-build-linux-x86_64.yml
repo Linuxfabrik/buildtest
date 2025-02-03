@@ -81,7 +81,7 @@ jobs:
       - name: 'Build the container lfmp-build-${{ matrix.distro }}'
         run: >
           podman build
-          --file "repos/monitoring-plugins/build/containerfiles/${{ matrix.distro }}"
+          --file "./repos/monitoring-plugins/build/containerfiles/${{ matrix.distro }}"
           --tag "lfmp-build-${{ matrix.distro }}"
 
 
