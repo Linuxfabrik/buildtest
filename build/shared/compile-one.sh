@@ -21,8 +21,7 @@ if uname -a | grep -q "_NT"; then
 fi
 
 PYTHON=python
-if ! command -v $PYTHON 2>&1 >/dev/null
-then
+if ! command -v $PYTHON 2>&1 >/dev/null; then
     PYTHON=/opt/venv/bin/python
 fi
 
@@ -33,7 +32,7 @@ $PYTHON -m nuitka \
     --include-plugin-directory="$LIB_DIR" \
     --output-dir="$OUTPUT_DIR"/ \
     --standalone \
-    "$ADDITIONAL_PARAMS" \
+    $ADDITIONAL_PARAMS \
     "$PLUGIN_DIR/$PLUGIN"
 #     --remove-output \
 
