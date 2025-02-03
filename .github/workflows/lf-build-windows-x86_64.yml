@@ -115,7 +115,7 @@ jobs:
       - name: 'Compile .wxs into .msi using WiX v5+'
         run: >
           wix.exe build
-          -bindpath $RUNNER_TEMP/dist
+          -bindpath ${{ runner.temp }}\dist
           -defaultcompressionlevel high
           ${{ runner.temp }}\lfmpx.wxs
           -out ${{ runner.temp }}\linuxfabrik-monitoring-plugins.msi
