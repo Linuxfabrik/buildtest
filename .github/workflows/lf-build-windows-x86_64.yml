@@ -69,7 +69,7 @@ jobs:
         run: 'python.exe -m pip list'
 
 
-      - name: 'Find and Download Latest Version Artifact'
+      - name: 'Find and download latest version artifact'
         shell: 'bash'
         run: >
           /bin/bash

@@ -87,7 +87,7 @@ jobs:
           --file "repos/monitoring-plugins/build/${{ matrix.distro }}/Containerfile"
           --tag "lfmp-build-${{ matrix.distro }}"
 
-      - name: 'Find and Download Latest Version Artifact'
+      - name: 'Find and download latest version artifact'
         run: |
           GH_API_URL="https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/actions/artifacts"
           ARTIFACT_NAME="version"
