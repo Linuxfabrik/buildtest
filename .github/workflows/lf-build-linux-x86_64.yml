@@ -88,7 +88,7 @@ jobs:
         run: >
           podman run
           --detach
-          --mount type=bind,source=build/containerfiles/${{ matrix.distro }},destination=/build,relabel=private
+          --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
           --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
           "lfmp-build-${{ matrix.distro }}"
 
@@ -107,7 +107,7 @@ jobs:
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash
           ./repos/monitoring-plugins/build/shared/compile-multiple.sh
-          $RUNNER_TEMP/compiled
+          $RUNNER_TEMP/${{ matrix.distro }}/compiled
           ./repos/lib
           ./repos/monitoring-plugins/check-plugins
           ${{ inputs.check-plugins }}
