@@ -84,9 +84,6 @@ jobs:
           --file "repos/monitoring-plugins/build/containerfiles/${{ matrix.distro }}"
           --tag "lfmp-build-${{ matrix.distro }}"
 
-      - name: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
-        run: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
-
 
       - name: 'Find and Download Latest Version Artifact'
         run: >
@@ -96,19 +93,23 @@ jobs:
           ${{ secrets.GITHUB_TOKEN }}
 
 
+      - name: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
+        run: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
+
       - name: 'Run the container lfmp-build-${{ matrix.distro }}'
         run: >
           podman run
           --rm
           --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
-          --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
+          --mount type=bind,source=./repos,destination=/repos,relabel=shared,ro=true
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash
-          "./repos/monitoring-plugins/build/shared/compile-multiple.sh
-          /compiled
-          /repos/lib
-          /repos/monitoring-plugins/check-plugins
-          ${{ inputs.check-plugins }}"
+          "/repos/monitoring-plugins/build/shared/compile-multiple.sh \
+          /compiled \
+          /repos/lib \
+          /repos/monitoring-plugins/check-plugins \
+          ${{ inputs.check-plugins }} && \
+          echo hallo"
 
 
       # - name: 'Upload build output'
