@@ -97,12 +97,11 @@ jobs:
         run: |
           mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/{compiled,dist}
 
-      - name: 'Compile and package in container lfmp-build-${{ matrix.distro }}'
+      - name: 'Compile the check plugins in container lfmp-build-${{ matrix.distro }}'
         run: >
           podman run
           --rm
           --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
-          --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/dist,destination=/dist,relabel=private
           --mount type=bind,source=./repos,destination=/repos,relabel=shared,ro=true
           "lfmp-build-${{ matrix.distro }}"
           /bin/bash
@@ -111,11 +110,14 @@ jobs:
           /repos/lib
           /repos/monitoring-plugins/check-plugins
           ${{ inputs.check-plugins }}
-          &&
+
+      - name: 'Merge the compiled plugins into one folder'
+        shell: 'bash'
+        run: >
           /bin/bash
-          /repos/monitoring-plugins/build/shared/merge-directories.sh
-          /compiled
-          /dist
+          ./repos/monitoring-plugins/build/shared/merge-directories.sh
+          $RUNNER_TEMP/${{ matrix.distro }}/compiled
+          $RUNNER_TEMP/${{ matrix.distro }}/dist
 
 
       - name: 'Upload build output'
