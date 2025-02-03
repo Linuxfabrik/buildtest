@@ -1,10 +1,10 @@
-if ! command -v getenforce &> /dev/null
-then
+#!/usr/bin/env bash
+
+if ! command -v getenforce &> /dev/null; then
     exit 0
 fi
 SELINUXSTATUS=$(getenforce)
-if [ "$SELINUXSTATUS" != "Enforcing" ]
-then
+if [ "$SELINUXSTATUS" != "Enforcing" ]; then
     exit 0
 fi
 restorecon -r /usr/lib64/nagios
