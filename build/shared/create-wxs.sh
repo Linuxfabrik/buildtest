@@ -21,7 +21,7 @@ cat <<EOF > $WXS_FILE
                       <Directory Id="NagiosDir" Name="nagios">
                           <Directory Id="PluginsDir" Name="plugins">
                               <!-- Automatically includes all files from the specified directory -->
-                              <Files Include="**" />
+                              <Files Include="$DIST_FOLDER\**" />
                           </Directory>
                       </Directory>
                   </Directory>
