@@ -78,7 +78,7 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install podman
 
-      - name: 'Build the container for ${{ matrix.distro }}'
+      - name: 'Build the container lfmp-build-${{ matrix.distro }}'
         run: >
           podman build
           --file "repos/monitoring-plugins/build/containerfiles/${{ matrix.distro }}"
@@ -87,7 +87,7 @@ jobs:
       - name: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
         run: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/compiled'
 
-      - name: 'Run the container for ${{ matrix.distro }}'
+      - name: 'Run the container lfmp-build-${{ matrix.distro }}'
         run: >
           podman run
           --name "lfmp-build-${{ matrix.distro }}"
@@ -95,6 +95,10 @@ jobs:
           --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
           --mount type=bind,source=repos,destination=/repos,relabel=shared,ro=true
           "lfmp-build-${{ matrix.distro }}"
+
+      - name: 'podman ps'
+        run: >
+          podman ps
 
 
       - name: 'Find and Download Latest Version Artifact'
