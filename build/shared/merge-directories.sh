@@ -5,9 +5,4 @@ set -e -x
 SRC="$1"
 DEST="$2"
 
-mkdir -p "$DEST"
-
-cd "$SRC"
-for dir in */*; do
-    \cp --recursive --verbose "$dir"* "$DEST"/
-done
+cp -a $SRC/*.dist/. $DEST/

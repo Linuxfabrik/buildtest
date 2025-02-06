@@ -2,41 +2,37 @@
 
 set -e -x
 
-LIB_DIR=$1
-PLUGIN_DIR=$2
-PLUGIN_NAME=$3
-OUTPUT_DIR=$4
+PLUGINS=$1  # check-plugins
+PLUGIN=$2   # cpu-usage
 
-if [ "$PLUGIN_NAME" == "example" ]; then
-    echo "Ignoring '$PLUGIN_NAME'"
-    exit 0
-fi
+# expects env:
+# $LFMP_DIR_REPOS
+# $LFMP_DIR_DIST
+
 if uname -a | grep -q "_NT"; then
     # We are on Windows.
-    if [ ! -f "$PLUGIN_DIR/$PLUGIN_NAME/.windows" ]; then
-        echo "Ignoring '$PLUGIN_NAME'"
+    if [ ! -f "$LFMP_DIR_REPOS/$PLUGINS/$PLUGIN/.windows" ]; then
+        echo "Ignoring '$PLUGIN'"
         exit 0
     fi
-    ADDITIONAL_PARAMS="--include-plugin-directory=$LIB_DIR --msvc=latest"
+    ADDITIONAL_PARAMS="--include-plugin-directory=$LFMP_DIR_REPOS/lib --msvc=latest"
 fi
 
-PYTHON=python
-if ! command -v $PYTHON 2>&1 >/dev/null; then
-    PYTHON=/opt/venv/bin/python
-fi
 
-echo "Compiling $PLUGIN_NAME using $PYTHON"
-PLUGIN="$PLUGIN_NAME/$PLUGIN_NAME"
-$PYTHON -m nuitka \
+echo "Compiling $PLUGIN using $PYTHON"
+PLUGIN="$PLUGIN/$PLUGIN"
+
+source /opt/venv/bin/activate
+python3 -m nuitka \
     --assume-yes-for-downloads \
-    --output-dir="$OUTPUT_DIR"/ \
+    --output-dir="$LFMP_DIR_DIST"/ \
+    --remove-output \
     --standalone \
     $ADDITIONAL_PARAMS \
-    $PLUGIN_DIR/$PLUGIN
-#     --remove-output \
+    $LFMP_DIR_REPOS/$PLUGINS/$PLUGIN/$PLUGIN
 
-if [ -e "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" ]; then
+if [ -e "$LFMP_DIR_DIST/$PLUGIN.dist/$PLUGIN.bin" ]; then
     # On Linux, compiled files have the ".bin" extension.
     # On Windows, compiled files have an ".exe" extension.
-    mv "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME.bin" "$OUTPUT_DIR/$PLUGIN_NAME.dist/$PLUGIN_NAME"
+    mv "$LFMP_DIR_DIST/$PLUGIN.dist/$PLUGIN.bin" "$LFMP_DIR_DIST/$PLUGIN.dist/$PLUGIN"
 fi

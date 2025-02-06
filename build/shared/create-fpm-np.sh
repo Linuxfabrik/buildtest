@@ -7,10 +7,10 @@ PACKAGE_VERSION=$2
 PACKAGE_ITERATION=$3
 PACKAGE_ARCH=$3
 
-mkdir -p /tmp/fpm/notification-plugins
-cd /tmp/fpm/notification-plugins || exit 1
+mkdir -p /tmp/fpm/np
+cd /tmp/fpm/np || exit 1
 
-cat > .fpm << EOF
+cat << EOF > .fpm
 --architecture "$PACKAGE_ARCH"
 --chdir /tmp/output/summary/notification-plugins
 --description "Notification scripts for Icinga."
@@ -30,6 +30,6 @@ cd /tmp/output/summary/notification-plugins || exit 1
 find . -type f -print0 | while IFS= read -r -d '' file; do
     file=${file#./}
     file=${file// /\\ }
-    echo "$file=/usr/lib64/nagios/plugins/$file" >> /tmp/fpm/notification-plugins/.fpm
+    echo "$file=/usr/lib64/nagios/plugins/$file" >> /tmp/fpm/np/.fpm
 done
 }
