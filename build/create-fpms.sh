@@ -74,9 +74,6 @@ EOF
     # build the check-plugins file list
     find $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins -type f -print0 | while IFS= read -r -d '' file; do
         file=${file// /\\ }  # handle file names with spaces correctly, escape all spaces
-        # if [ "$(basename $file)" == ".fpm" ]; then
-        #     continue
-        # fi
         echo "check-plugins/$file=/usr/lib64/nagios/plugins/$file" >> $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins/.fpm
     done
 
@@ -110,9 +107,6 @@ EOF
     # build the notification-plugins file list
     find $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins -type f -print0 | while IFS= read -r -d '' file; do
         file=${file// /\\ }  # handle file names with spaces correctly, escape all spaces
-        # if [ "$(basename $file)" == ".fpm" ]; then
-        #     continue
-        # fi
         echo "notification-plugins/$file=/usr/lib64/nagios/plugins/notifications/$file" >> $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm
     done
 
