@@ -89,7 +89,7 @@ EOF
     fi
 
     mkdir -p $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins
-    cat > $LFMP_DIR_PACKPACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm << EOF
+    cat > $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm << EOF
 --architecture $LFMP_ARCH
 --chdir $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO
 --description "Additional notification scripts for Icinga from the Linuxfabrik Monitoring Plugins project."
