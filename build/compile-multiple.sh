@@ -25,6 +25,7 @@ for PLUGINS in check-plugins notification-plugins event-plugins; do
         echo "✅ No plugin list provided. Discovering all plugins..."
         # Find directories immediately under $PLUGINS/, extract their basenames, and join them with commas.
         LFMP_COMPILE_PLUGINS=$(find "/repos/monitoring-plugins/$PLUGINS" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort)
+        echo "✅ Found $LFMP_COMPILE_PLUGINS"
     fi
 
     for PLUGIN in $LFMP_COMPILE_PLUGINS; do
