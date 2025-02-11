@@ -108,7 +108,7 @@ jobs:
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/create-packages.sh
 
-      - name: 'Upload the packages (rpm, deb, tar.gz, zip)'
+      - name: 'Upload the packages (rpm, deb, tar, zip)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
           path: '${{ env.LFMP_DIR_PACKAGED }}/*'
