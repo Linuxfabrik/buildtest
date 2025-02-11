@@ -36,10 +36,10 @@ jobs:
           echo "LFMP_PACKAGE_ITERATION=${{ github.event.inputs.package-iteration }}" >> $GITHUB_ENV
           echo "LFMP_TARGET_DISTROS=${{ github.event.inputs.target-distros }}" >> $GITHUB_ENV
 
-          echo "LFMP_DIR_REPOS=/tmp/lfmp/repos" >> $GITHUB_ENV
-          echo "LFMP_DIR_COMPILED=/tmp/lfmp/compiled" >> $GITHUB_ENV
-          echo "LFMP_DIR_DIST=/tmp/lfmp/dist" >> $GITHUB_ENV
-          echo "LFMP_DIR_PACKAGED=/tmp/lfmp/packaged" >> $GITHUB_ENV
+          echo "LFMP_DIR_REPOS=$RUNNER_TEMP/lfmp/repos" >> $GITHUB_ENV
+          echo "LFMP_DIR_COMPILED=$RUNNER_TEMP/lfmp/compiled" >> $GITHUB_ENV
+          echo "LFMP_DIR_DIST=$RUNNER_TEMP/lfmp/dist" >> $GITHUB_ENV
+          echo "LFMP_DIR_PACKAGED=$RUNNER_TEMP/lfmp/packaged" >> $GITHUB_ENV
 
       - name: 'Create working directories'
         run: |
