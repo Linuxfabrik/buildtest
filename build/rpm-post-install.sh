@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 2025021001
 
 if ! command -v getenforce &> /dev/null; then
     exit 0

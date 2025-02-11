@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 2025021001
 
 # This script prints all environment variables in alphabetical order.
 set -e -x

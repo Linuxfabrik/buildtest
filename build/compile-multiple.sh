@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
+# 2025021001
+
+# This runs in a container.
 
 set -e -x
-
-PLUGINS=$1  # check-plugins, notification-plugins, event-plugins etc.
-
-# expects env:
-# $LFMP_DIR_COMPILE
-# $LFMP_DIR_REPOS
-# $LFMP_COMPILE_PLUGINS  # a space-separated list of plugin names (can be empty)
-# $LFMP_REPO_MP
 
 if [[ ! -d "$LFMP_DIR_REPOS/lib" ]]; then
     echo "The Python libraries (https://github.com/Linuxfabrik/lib) could not be found at $LFMP_DIR_REPOS/lib."
@@ -29,17 +24,18 @@ if [[ -z "$LFMP_COMPILE_PLUGINS" ]]; then
 fi
 
 # Loop through each plugin in the list.
-mkdir -p "$LFMP_DIR_COMPILE"
-for PLUGIN in "$LFMP_COMPILE_PLUGINS"; do
-    if [ "$PLUGIN" == "example" ]; then
-        continue
-    fi
-    echo "Processing $PLUGIN"
-    if [[ -d "$LFMP_DIR_REPOS/$LFMP_REPO_MP/$PLUGINS/$PLUGIN" ]]; then
-        echo $(pwd)
-        bash $(dirname "$0")/compile-one.sh $PLUGINS $PLUGIN
-    else
-        echo "Directory $LFMP_DIR_REPOS/$PLUGINS/$PLUGIN does not exist. Skipping."
-        exit 1
-    fi
+for PLUGINS in check-plugins notification-plugins event-plugins; do
+    echo "Processing $PLUGINS..."
+    for PLUGIN in $LFMP_COMPILE_PLUGINS; do
+        if [ "$PLUGIN" == "example" ]; then
+            continue
+        fi
+        echo "Processing $PLUGIN"
+        if [[ -d "$LFMP_DIR_REPOS/$LFMP_REPO_MP/$PLUGINS/$PLUGIN" ]]; then
+            echo $(pwd)
+            bash $(dirname "$0")/compile-one.sh $PLUGINS $PLUGIN
+        else
+            echo "Directory $LFMP_DIR_REPOS/$PLUGINS/$PLUGIN does not exist. Ignoring..."
+        fi
+    done
 done

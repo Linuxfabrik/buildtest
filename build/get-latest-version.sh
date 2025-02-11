@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
+# 2025021001
 
 set -e
 
-# expecting env: $GITHUB_REPOSITORY, $GITHUB_TOKEN
-
 GITHUB_API_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts"
 ARTIFACT_NAME="version"
+
+sudo apt update
+sudo apt -y install jq
+
 
 echo "Fetching all artifacts via REST and filter by name to get the latest version"
 ARTIFACT_INFO=$(curl --silent \
@@ -32,6 +35,7 @@ else
     echo "✅ Extracted version: $LFMP_VERSION"
     # Append an environment variable for later steps
     if [[ -z $GITHUB_ENV ]]; then
+        # we are not on an GitHub runner
         export LFMP_VERSION=$LFMP_VERSION
     else
         echo "LFMP_VERSION=$LFMP_VERSION" >> "$GITHUB_ENV"
