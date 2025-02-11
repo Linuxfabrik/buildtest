@@ -66,4 +66,4 @@ mkdir /tmp/selinux
 cp $REPO_DIR/monitoring-plugins/assets/selinux/linuxfabrik-monitoring-plugins.te /tmp/selinux/
 cd /tmp/selinux/
 make --file /usr/share/selinux/devel/Makefile linuxfabrik-monitoring-plugins.pp
-\cp --archive linuxfabrik-monitoring-plugins.pp /compiled/check-plugins/
+\cp --archive linuxfabrik-monitoring-plugins.pp /compiled/check-plugins

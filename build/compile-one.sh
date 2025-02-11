@@ -5,36 +5,27 @@
 
 set -e -x
 
-if uname -a | grep -q "_NT"; then
-    # We are on Windows.
-    REPO_DIR="$LFMP_DIR_REPOS"
-    COMPILE_DIR="$LFMP_DIR_COMPILED"
-else
-    # We are in a container.
-    REPO_DIR="/repos"
-    COMPILE_DIR="/compiled"
-fi
-
 # inputs:
 PLUGINS=$1  # what to compile - "check-plugins", "notification-plugins" or "event-plugins"
 PLUGIN=$2   # which plugin to compile, for example "cpu-usage"
 
 if uname -a | grep -q "_NT"; then
     # We are on Windows.
+    REPO_DIR="$LFMP_DIR_REPOS"
     if [ ! -f "$REPO_DIR/monitoring-plugins/$PLUGINS/$PLUGIN/.windows" ]; then
         echo "✅ Ignoring '$PLUGIN' on Windows"
         exit 0
     fi
+    COMPILE_DIR="$LFMP_DIR_COMPILED"
     ADDITIONAL_PARAMS="--include-plugin-directory=$REPO_DIR/lib --msvc=latest"
-fi
-
-
-echo "✅ Compiling $PLUGIN..."
-
-if ! uname -a | grep -q "_NT"; then
+else
     # We are in a container.
+    REPO_DIR="/repos"
+    COMPILE_DIR="/compiled"
     source /opt/venv/bin/activate
 fi
+
+echo "✅ Compiling $PLUGIN into $COMPILE_DIR/$PLUGINS/..."
 python3 -m nuitka \
     --assume-yes-for-downloads \
     --output-dir=$COMPILE_DIR/$PLUGINS/ \
