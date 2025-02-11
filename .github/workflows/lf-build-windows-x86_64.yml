@@ -71,36 +71,29 @@ jobs:
           $LFMP_DIR_REPOS/monitoring-plugins/build/get-latest-version.sh
 
       - name: 'Debug'
+        shell: 'bash'
         run: >
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/debug.sh
 
+      - name: 'Install python3.13'
+        uses: 'actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38' # v5.4.0
+        with:
+          python-version: '3.13'
 
+      - name: 'python.exe -m pip install --upgrade pip wheel setuptools'
+        run: 'python.exe -m pip install --upgrade pip wheel setuptools'
 
-      # - name: 'Install python3.13'
-      #   uses: 'actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38' # v5.4.0
-      #   with:
-      #     python-version: '3.13'
+      # ordered-set is for nuitka: "Nuitka:WARNING: Using very slow fallback for ordered sets, please install 'ordered-set' or 'orderedset' PyPI packages for best Python compile time performance."
+      - name: 'python.exe -m pip install --upgrade ordered-set Nuitka'
+        run: 'python.exe -m pip install --upgrade ordered-set Nuitka'
 
-      # - run: 'python.exe -m pip install --upgrade pip wheel setuptools'
+      # install 3rd party libraries for all check plugins
+      - name: 'python.exe -m pip install --requirement ${{ github.workspace }}\repos\monitoring-plugins\requirements-windows.txt --require-hashes'
+        run: 'python.exe -m pip install --requirement ${{ github.workspace }}\repos\monitoring-plugins\requirements-windows.txt --require-hashes'
 
-      # # ordered-set is for nuitka: "Nuitka:WARNING: Using very slow fallback for ordered sets, please install 'ordered-set' or 'orderedset' PyPI packages for best Python compile time performance."
-      # - run: 'python.exe -m pip install --upgrade ordered-set Nuitka Nuitka'
-
-      # # install 3rd party libraries for all check plugins
-      # - run: 'python.exe -m pip install --requirement ${{ github.workspace }}\repos\monitoring-plugins\requirements-windows.txt --require-hashes'
-
-      # - name: 'Verify Python installation'
-      #   run: 'python.exe -m pip list'
-
-
-      # - name: 'Find and download latest version artifact'
-      #   shell: 'bash'
-      #   run: >
-      #     /bin/bash
-      #     ./repos/monitoring-plugins/build/shared/get-latest-version.sh
-      #     $GITHUB_REPOSITORY
-      #     ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Verify Python installation'
+        run: 'python.exe -m pip list'
 
       # - name: 'Compile the check plugins'
       #   shell: 'bash'
