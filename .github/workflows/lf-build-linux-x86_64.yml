@@ -16,7 +16,7 @@ on:
         required: false
         default: '1'
       lib-repo-ref:
-        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag. (not implemented yet)'
+        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
         required: false
         default: ''
 
