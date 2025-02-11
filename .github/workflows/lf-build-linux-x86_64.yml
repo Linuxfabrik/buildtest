@@ -72,10 +72,15 @@ jobs:
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/get-latest-version.sh
 
-      # - name: '⚙️ apt-get -y install podman'
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get -y install podman
+      - name: 'Install podman'
+        run: >
+          /bin/bash
+           $LFMP_DIR_REPOS/monitoring-plugins/build/get-latest-version.sh
+
+      - name: 'For each distro compile the specified plugins'
+        run: >
+          /bin/bash
+          $LFMP_DIR_REPOS/monitoring-plugins/build/matrix-compile.sh
 
       # - name: 'Build the container lfmp-build-${{ matrix.distro }}'
       #   run: >
