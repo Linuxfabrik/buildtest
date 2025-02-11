@@ -36,7 +36,7 @@ jobs:
           echo "LFMP_PACKAGE_ITERATION=${{ github.event.inputs.package-iteration }}" >> $GITHUB_ENV
           echo "LFMP_TARGET_DISTROS=${{ github.event.inputs.target-distros }}" >> $GITHUB_ENV
 
-          echo "LFMP_DIR_REPOS=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          echo "LFMP_DIR_REPOS=$GITHUB_WORKSPACE/repos" >> $GITHUB_ENV
           echo "LFMP_DIR_COMPILED=$RUNNER_TEMP/lfmp/compiled" >> $GITHUB_ENV
           echo "LFMP_DIR_DIST=$RUNNER_TEMP/lfmp/dist" >> $GITHUB_ENV
           echo "LFMP_DIR_PACKAGED=$RUNNER_TEMP/lfmp/packaged" >> $GITHUB_ENV
@@ -65,19 +65,10 @@ jobs:
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/debug.sh
 
-      # - name: 'Debug Inputs'
-      #   run: >
-      #     echo
-      #     check-plugins=${{ inputs.check-plugins }}
-      #     lib-repo-ref=${{ inputs.lib-repo-ref }}
-      #     package-iteration=${{ inputs.package-iteration }}
-      #     distros=${{ inputs.distros }}
-
-      # - name: 'Debug Github Environment'
-      #   run: >
-      #     /bin/bash
-      #     ./repos/monitoring-plugins/build/shared/debug.sh
-
+      - name: 'Fetch the current version from Github'
+        run: >
+          /bin/bash
+          $LFMP_DIR_REPOS/monitoring-plugins/build/get-latest-version.sh
 
       # - name: '⚙️ apt-get -y install podman'
       #   run: |
