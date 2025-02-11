@@ -8,17 +8,17 @@ on:
         required: false
         default: 'cpu-usage feed scanrootkit'
       target-distros:
-        description: 'Space-separated list of operating systems to build on. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`.'
+        description: 'Space-separated list of operating systems to build on. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`. Cannot be empty.'
         required: false
         default: 'rocky8 rocky9'
-      lib-repo-ref:
-        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
-        required: false
-        default: ''
       package-iteration:
         description: 'The iteration number for the package (usually "1").'
         required: false
         default: '1'
+      lib-repo-ref:
+        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag. (not implemented yet)'
+        required: false
+        default: ''
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
@@ -29,7 +29,7 @@ jobs:
     runs-on:
       - 'ubuntu-24.04'
     steps:
-      - name: 'Set environment variables for our build scripts'
+      - name: 'Set environment variables for the build scripts'
         run: |
           echo "LFMP_ARCH=x86_64" >> $GITHUB_ENV
           echo "LFMP_COMPILE_PLUGINS=${{ github.event.inputs.compile-plugins }}" >> $GITHUB_ENV
@@ -40,6 +40,9 @@ jobs:
           echo "LFMP_DIR_COMPILED=/tmp/lfmp/compiled" >> $GITHUB_ENV
           echo "LFMP_DIR_DIST=/tmp/lfmp/dist" >> $GITHUB_ENV
           echo "LFMP_DIR_PACKAGED=/tmp/lfmp/packaged" >> $GITHUB_ENV
+
+      - name: 'Create working directories'
+        run: |
           mkdir -p $LFMP_DIR_REPOS
           mkdir -p $LFMP_DIR_COMPILED
           mkdir -p $LFMP_DIR_DIST
