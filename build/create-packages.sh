@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
-# 2025021001
+# 2025021103
 
 set -e -x
 
-cd
 for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
     for PLUGINS in check-plugins notification-plugins event-plugins; do
-        if [[ ! -e $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/$PLUGINS/.fpm ]]; then
+        if [[ ! -e $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/$PLUGINS/.fpm ]]; then
             continue;
         fi
 
-        cd $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/$PLUGINS
+        cd $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/$PLUGINS
         case "$LFMP_TARGET_DISTRO" in
         debian11)
             fpm --output-type deb
@@ -18,10 +17,10 @@ for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
         debian12)
             fpm --output-type deb
             ;;
-        rhel8)
+        rocky8)
             fpm --output-type rpm
             ;;
-        rhel9)
+        rocky9)
             fpm --output-type rpm
             ;;
         ubuntu2004)
@@ -29,17 +28,16 @@ for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
             fpm --output-type tar
             fpm --output-type zip
             ;;
-        ubuntu2004)
+        ubuntu2204)
             fpm --output-type deb
             ;;
-        ubuntu2004)
+        ubuntu2404)
             fpm --output-type deb
             ;;
         *)
-            vendor="other"
+            continue
             ;;
         esac
-        cd
 
     done
 done

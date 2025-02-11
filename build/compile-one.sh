@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# 2025021001
+# 2025021103
+
+# This runs in a container.
 
 set -e -x
 
@@ -9,27 +11,27 @@ PLUGIN=$2   # which plugin to compile, for example "cpu-usage"
 
 if uname -a | grep -q "_NT"; then
     # We are on Windows.
-    if [ ! -f "$LFMP_DIR_REPOS/$LFMP_REPO_MP/$PLUGINS/$PLUGIN/.windows" ]; then
-        echo "Ignoring '$PLUGIN'"
+    if [ ! -f "/repos/monitoring-plugins/$PLUGINS/$PLUGIN/.windows" ]; then
+        echo "✅ Ignoring '$PLUGIN' on Windows"
         exit 0
     fi
-    ADDITIONAL_PARAMS="--include-plugin-directory=$LFMP_DIR_REPOS/lib --msvc=latest"
+    ADDITIONAL_PARAMS="--include-plugin-directory=/repos/lib --msvc=latest"
 fi
 
 
-echo "Compiling $PLUGIN..."
+echo "✅ Compiling $PLUGIN..."
 
 source /opt/venv/bin/activate
 python3 -m nuitka \
     --assume-yes-for-downloads \
-    --output-dir="$LFMP_DIR_COMPILED"/$PLUGINS/ \
+    --output-dir=/compiled/$PLUGINS/ \
     --remove-output \
     --standalone \
     $ADDITIONAL_PARAMS \
-    $LFMP_DIR_REPOS/$LFMP_REPO_MP/$PLUGINS/$PLUGIN/$PLUGIN
+    /repos/monitoring-plugins/$PLUGINS/$PLUGIN/$PLUGIN
 
-if [ -e "$LFMP_DIR_COMPILED/$PLUGINS/$PLUGIN.dist/$PLUGIN.bin" ]; then
+if [ -e "/compiled/$PLUGINS/$PLUGIN.dist/$PLUGIN.bin" ]; then
     # On Linux, compiled files have the ".bin" extension.
     # On Windows, compiled files have an ".exe" extension.
-    mv "$LFMP_DIR_COMPILED/$PLUGINS/$PLUGIN.dist/$PLUGIN.bin" "$LFMP_DIR_COMPILED/$PLUGINS/$PLUGIN.dist/$PLUGIN"
+    mv "/compiled/$PLUGINS/$PLUGIN.dist/$PLUGIN.bin" "/compiled/$PLUGINS/$PLUGIN.dist/$PLUGIN"
 fi

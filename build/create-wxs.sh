@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
-# 2025021001
 
 set -e -x
 
 WXS_FILE="$1"
-PACKAGE_VERSION=$2
+LFMP_VERSION=$2
 DIST_FOLDER=$3
 
 cat <<EOF > "$WXS_FILE"
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package
       Name="Linuxfabrik Monitoring Plugins"
-      Version="$PACKAGE_VERSION"
+      Version="$LFMP_VERSION"
       Manufacturer="Linuxfabrik GmbH"
       UpgradeCode="bb340ae1-12a5-41d3-a27f-8677df3bdb2b"
   >

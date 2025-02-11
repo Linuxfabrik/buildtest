@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 2025021103
 
 set -e -x
 
@@ -33,10 +34,11 @@ for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
         continue
     fi
 
-    cat > $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm << EOF
---after-install $LFMP_DIR_REPOS/$LFMP_REPO_MP/build/rpm-post-install.sh
+    mkdir -p $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins
+    cat > $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins/.fpm << EOF
+--after-install $LFMP_DIR_REPOS/monitoring-plugins/build/rpm-post-install.sh
 --architecture $LFMP_ARCH
---chdir ../
+--chdir $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO
 --description "This Enterprise Class Check Plugin Collection offers a bunch of Nagios-compatible check plugins for Icinga, Naemon, Nagios, OP5, Shinken, Sensu and other monitoring applications. Each plugin is a stand-alone command line tool that provides a specific type of check. Typically, your monitoring software will run these check plugins to determine the current status of hosts and services on your network."
 --input-type dir
 --iteration $LFMP_PACKAGE_ITERATION
@@ -51,38 +53,36 @@ EOF
 
     LFMP_TARGET_DISTRO_FAMILY=$(get_vendor $LFMP_TARGET_DISTRO)
 
-    # build the check-plugins file list
-    find $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins -type f -print0 | while IFS= read -r -d '' file; do
-        file=${file// /\\ }  # handle file names with spaces correctly, escape all spaces
-        if [ "$(basename $file)" == ".fpm" ]; then
-            continue
-        fi
-        echo "check-plugins/$file=/usr/lib64/nagios/plugins/$file" >> $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm
-    done
-
     # prepare and ship the sudoers file
     mkdir -p $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/assets/
     if [ "$LFMP_TARGET_DISTRO_FAMILY" != "other" ]; then
-        \cp --archive "$LFMP_DIR_REPOS/$LFMP_REPO_MP"/assets/sudoers/"$LFMP_TARGET_DISTRO_FAMILY".sudoers $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/assets/sudoers
-        echo "assets/sudoers=/etc/sudoers.d/monitoring-plugins" >> $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm
-    fi
-
-    # ship the rpm-post-install.sh
-    \cp --archive "$LFMP_DIR_REPOS/$LFMP_REPO_MP"/build/rpm-post-install.sh $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/assets/sudoers
-        echo "assets/sudoers=/etc/sudoers.d/monitoring-plugins" >> $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm
+        \cp --archive "$LFMP_DIR_REPOS/monitoring-plugins"/assets/sudoers/"$LFMP_TARGET_DISTRO_FAMILY".sudoers $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/assets/sudoers
+        echo "assets/sudoers=/etc/sudoers.d/monitoring-plugins" >> $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins/.fpm
     fi
 
     # prepare and ship the asset files for all check-plugins
     mkdir -p $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/assets/
-    find "$LFMP_DIR_REPOS/$LFMP_REPO_MP"/check-plugins -type d -name 'assets' -exec find {} -type f -print0 \; | while IFS= read -r -d '' file; do
+    find "$LFMP_DIR_REPOS/monitoring-plugins"/check-plugins -type d -name 'assets' -exec find {} -type f -print0 \; | while IFS= read -r -d '' file; do
         \cp --archive "$file" $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/assets/
-        file=$(basename "$file")
-        echo "check-plugins/assets/$file=/usr/lib64/nagios/plugins/assets/$file" >> $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm
+    done
+
+    # SELinux .pp file
+    if [[ -e $LFMP_DIR_COMPILED/$LFMP_TARGET_DISTRO/check-plugins/linuxfabrik-monitoring-plugins.pp ]]; then
+        \cp --archive $LFMP_DIR_COMPILED/$LFMP_TARGET_DISTRO/check-plugins/linuxfabrik-monitoring-plugins.pp $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/assets/
+    fi
+
+    # build the check-plugins file list
+    find $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins -type f -print0 | while IFS= read -r -d '' file; do
+        file=${file// /\\ }  # handle file names with spaces correctly, escape all spaces
+        # if [ "$(basename $file)" == ".fpm" ]; then
+        #     continue
+        # fi
+        echo "check-plugins/$file=/usr/lib64/nagios/plugins/$file" >> $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins/.fpm
     done
 
     # fix directories
-    sed --in-place "s#$LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/##g" $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm
-    echo $(cat "$LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/.fpm")
+    sed --in-place "s#$LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/check-plugins/##g" $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins/.fpm
+    echo $(cat "$LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/check-plugins/.fpm")
 
     # ---
 
@@ -91,9 +91,10 @@ EOF
         continue
     fi
 
-    cat > $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins/.fpm << EOF
+    mkdir -p $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins
+    cat > $LFMP_DIR_PACKPACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm << EOF
 --architecture $LFMP_ARCH
---chdir ../
+--chdir $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO
 --description "Additional notification scripts for Icinga from the Linuxfabrik Monitoring Plugins project."
 --input-type dir
 --iteration $LFMP_PACKAGE_ITERATION
@@ -109,14 +110,14 @@ EOF
     # build the notification-plugins file list
     find $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins -type f -print0 | while IFS= read -r -d '' file; do
         file=${file// /\\ }  # handle file names with spaces correctly, escape all spaces
-        if [ "$(basename $file)" == ".fpm" ]; then
-            continue
-        fi
-        echo "notification-plugins/$file=/usr/lib64/nagios/plugins/notifications/$file" >> $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins/.fpm
+        # if [ "$(basename $file)" == ".fpm" ]; then
+        #     continue
+        # fi
+        echo "notification-plugins/$file=/usr/lib64/nagios/plugins/notifications/$file" >> $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm
     done
 
     # fix directories
-    sed --in-place "s#$LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins/##g" $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins/.fpm
-    echo $(cat "$LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins/.fpm")
+    sed --in-place "s#$LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/notification-plugins/##g" $LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm
+    echo $(cat "$LFMP_DIR_PACKAGED/$LFMP_TARGET_DISTRO/notification-plugins/.fpm")
 
 done
