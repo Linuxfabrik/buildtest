@@ -2,17 +2,13 @@
 
 set -e -x
 
-WXS_FILE="$1"
-LFMP_VERSION=$2
-DIST_FOLDER=$3
-
-cat <<EOF > "$WXS_FILE"
+cat > "$LFMP_DIR_PACKAGED/lfmp.wxs" << EOF
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package
       Name="Linuxfabrik Monitoring Plugins"
       Version="$LFMP_VERSION"
       Manufacturer="Linuxfabrik GmbH"
-      UpgradeCode="bb340ae1-12a5-41d3-a27f-8677df3bdb2b"
+      UpgradeCode="bb340ae1-12a5-41d3-a27f-8677df3b8032"
   >
       <MediaTemplate EmbedCab="yes" />
       <StandardDirectory Id="CommonAppDataFolder">
@@ -22,7 +18,7 @@ cat <<EOF > "$WXS_FILE"
                       <Directory Id="NagiosDir" Name="nagios">
                           <Directory Id="PluginsDir" Name="plugins">
                               <!-- Automatically includes all files from the specified directory -->
-                              <Files Include="$DIST_FOLDER\**" />
+                              <Files Include="$LFMP_DIR_DIST\**" />
                           </Directory>
                       </Directory>
                   </Directory>
@@ -32,4 +28,4 @@ cat <<EOF > "$WXS_FILE"
   </Package>
 </Wix>
 EOF
-echo $(cat "$WXS_FILE")
+echo $(cat "$LFMP_DIR_PACKAGED/lfmp.wxs")
