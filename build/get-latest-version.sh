@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
-# 2025021001
+# 2025021101
 
-set -e
+set -e -x
 
-GITHUB_API_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts"
-ARTIFACT_NAME="version"
-
-sudo apt update
-sudo apt -y install jq
-
+if ! command -v jq &> /dev/null; then
+    sudo apt update
+    sudo apt -y install jq
+fi
 
 echo "Fetching all artifacts via REST and filter by name to get the latest version"
+ARTIFACT_NAME="version"
 ARTIFACT_INFO=$(curl --silent \
     --header "Authorization: Bearer $GITHUB_TOKEN" \
     --header "Accept: application/vnd.github.v3+json" \
-    "$GITHUB_API_URL" | \
+    "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/artifacts" | \
     jq --raw-output ".artifacts | map(select(.name == \"$ARTIFACT_NAME\")) | sort_by(.created_at) | last // {}")
 
 # Extract the download URL
