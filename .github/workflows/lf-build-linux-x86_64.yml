@@ -102,8 +102,14 @@ jobs:
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/create-packages.sh
 
-      # - name: 'Upload build output'
-      #   uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
-      #   with:
-      #     path: '${{ runner.temp }}/${{ matrix.distro }}/dist/*'
-      #     name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.${{ matrix.distro }}.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"
+      - name: 'Upload the compiled plugins'
+        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+        with:
+          path: '${{ env.$LFMP_DIR_DIST }}/*'
+          name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.compiled.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"
+
+      - name: 'Upload the packages (rpm, deb, tar.gz, zip)'
+        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+        with:
+          path: '${{ env.$$LFMP_DIR_PACKAGED }}/*'
+          name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.packages.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"
