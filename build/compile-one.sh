@@ -12,7 +12,7 @@ PLUGIN=$2   # which plugin to compile, for example "cpu-usage"
 if uname -a | grep -q "_NT"; then
     # We are on Windows.
     REPO_DIR="$LFMP_DIR_REPOS"
-    if [ ! -f "$REPO_DIR/monitoring-plugins/$PLUGINS/$PLUGIN/.windows" ]; then
+    if [[ ! -f "$REPO_DIR/monitoring-plugins/$PLUGINS/$PLUGIN/.windows" ]]; then
         echo "✅ Ignoring '$PLUGIN' on Windows"
         exit 0
     fi
