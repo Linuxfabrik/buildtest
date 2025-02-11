@@ -95,23 +95,23 @@ jobs:
       - name: 'Verify Python installation'
         run: 'python.exe -m pip list'
 
-      # - name: 'Compile the check plugins'
-      #   shell: 'bash'
-      #   run: >
-      #     /bin/bash
-      #     ./repos/monitoring-plugins/build/shared/compile-multiple.sh
-      #     $RUNNER_TEMP/compiled
-      #     ./repos/lib
-      #     ./repos/monitoring-plugins/check-plugins
-      #     ${{ inputs.check-plugins }}
+      - name: 'Compile the check plugins'
+        shell: 'bash'
+        run: >
+          /bin/bash
+          $LFMP_DIR_REPOS/monitoring-plugins/build/compile-multiple.sh
 
-      # - name: 'Merge the compiled plugins into one folder'
-      #   shell: 'bash'
-      #   run: >
-      #     /bin/bash
-      #     ./repos/monitoring-plugins/build/shared/merge-directories.sh
-      #     $RUNNER_TEMP/compiled
-      #     $RUNNER_TEMP/dist
+      - name: 'Move and merge the relevant parts into $LFMP_DIR_DIST, the folder to build packages from'
+        shell: 'bash'
+        run: >
+          /bin/bash
+          $LFMP_DIR_REPOS/monitoring-plugins/build/merge-to-dist.sh
+
+      - name: 'Upload the compiled plugins'
+        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+        with:
+          path: '${{ env.LFMP_DIR_DIST }}/*'
+          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.compiled.${{ env.LFMP_ARCH }}"
 
 
       # - name: 'Upload build output (zip)'
