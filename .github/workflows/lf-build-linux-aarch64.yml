@@ -75,7 +75,7 @@ jobs:
       - name: 'Install podman'
         run: >
           /bin/bash
-           $LFMP_DIR_REPOS/monitoring-plugins/build/get-latest-version.sh
+           $LFMP_DIR_REPOS/monitoring-plugins/build/install-podman.sh
 
       - name: 'For each distro compile the specified plugins'
         run: >
