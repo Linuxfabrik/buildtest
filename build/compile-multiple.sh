@@ -15,17 +15,18 @@ source /opt/venv/bin/activate
 python3 --version
 python3 -m pip install --requirement="/repos/monitoring-plugins/requirements.txt" --require-hashes
 
-# If $LFMP_COMPILE_PLUGINS is empty, find all plugin directories under
-# /repos/monitoring-plugins/$PLUGINS/ and create a comma-separated list.
-if [[ -z "$LFMP_COMPILE_PLUGINS" ]]; then
-    echo "✅ No plugin list provided. Discovering all plugins..."
-    # Find directories immediately under $PLUGINS/, extract their basenames, and join them with commas.
-    LFMP_COMPILE_PLUGINS=$(find "/repos/monitoring-plugins/$PLUGINS" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort)
-fi
-
 # Loop through each plugin in the list.
 for PLUGINS in check-plugins notification-plugins event-plugins; do
     echo "✅ Processing $PLUGINS..."
+
+    # If $LFMP_COMPILE_PLUGINS is empty, find all plugin directories under
+    # /repos/monitoring-plugins/$PLUGINS/ and create a space-separated list.
+    if [[ -z "$LFMP_COMPILE_PLUGINS" ]]; then
+        echo "✅ No plugin list provided. Discovering all plugins..."
+        # Find directories immediately under $PLUGINS/, extract their basenames, and join them with commas.
+        LFMP_COMPILE_PLUGINS=$(find "/repos/monitoring-plugins/$PLUGINS" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort)
+    fi
+
     for PLUGIN in $LFMP_COMPILE_PLUGINS; do
         if [ "$PLUGIN" == "example" ]; then
             continue

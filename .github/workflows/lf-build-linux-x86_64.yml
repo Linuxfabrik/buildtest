@@ -1,0 +1,158 @@
+name: 'Linuxfabrik: Build Linux (x86_64)'
+
+on:
+  workflow_dispatch:
+    inputs:
+      compile-plugins:
+        description: 'Space-separated list of check plugins to compile and package. Leave empty to build all plugins.'
+        required: false
+        default: 'cpu-usage feed scanrootkit'
+      target-distros:
+        description: 'Space-separated list of operating systems to build on. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`.'
+        required: false
+        default: 'rocky8 rocky9'
+      lib-repo-ref:
+        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
+        required: false
+        default: ''
+      package-iteration:
+        description: 'The iteration number for the package (usually "1").'
+        required: false
+        default: '1'
+
+# modify the default permissions granted to the GITHUB_TOKEN
+permissions:
+  contents: 'read'
+
+jobs:
+  build-packages:
+    runs-on:
+      - 'ubuntu-24.04'
+    steps:
+      - name: 'Set environment variables for our build scripts'
+        run: |
+          echo "LFMP_ARCH=x86_64" >> $GITHUB_ENV
+          echo "LFMP_COMPILE_PLUGINS=${{ github.event.inputs.compile-plugins }}" >> $GITHUB_ENV
+          echo "LFMP_PACKAGE_ITERATION=${{ github.event.inputs.package-iteration }}" >> $GITHUB_ENV
+          echo "LFMP_TARGET_DISTROS=${{ github.event.inputs.target-distros }}" >> $GITHUB_ENV
+
+          echo "LFMP_DIR_REPOS=/tmp/lfmp/repos" >> $GITHUB_ENV
+          echo "LFMP_DIR_COMPILED=/tmp/lfmp/compiled" >> $GITHUB_ENV
+          echo "LFMP_DIR_DIST=/tmp/lfmp/dist" >> $GITHUB_ENV
+          echo "LFMP_DIR_PACKAGED=/tmp/lfmp/packaged" >> $GITHUB_ENV
+          mkdir -p $LFMP_DIR_REPOS
+          mkdir -p $LFMP_DIR_COMPILED
+          mkdir -p $LFMP_DIR_DIST
+          mkdir -p $LFMP_DIR_PACKAGED
+
+      - name: 'Debug'
+        run: >
+          /bin/bash
+          $LFMP_DIR_REPOS/monitoring-plugins/build/debug.sh
+
+      # - name: 'Debug Inputs'
+      #   run: >
+      #     echo
+      #     check-plugins=${{ inputs.check-plugins }}
+      #     lib-repo-ref=${{ inputs.lib-repo-ref }}
+      #     package-iteration=${{ inputs.package-iteration }}
+      #     distros=${{ inputs.distros }}
+
+      # - name: 'git clone https://github.com/Linuxfabrik/THIS-REPO'
+      #   uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
+      #   with:
+      #     path: 'repos/monitoring-plugins'
+
+      # - name: 'git clone https://github.com/Linuxfabrik/lib'
+      #   uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
+      #   with:
+      #     repository: 'Linuxfabrik/lib'
+      #     ref: '${{ inputs.lib-repo-ref || github.ref_name }}'
+      #     path: 'repos/lib'
+
+      # - name: 'Debug Github Environment'
+      #   run: >
+      #     /bin/bash
+      #     ./repos/monitoring-plugins/build/shared/debug.sh
+
+
+      # - name: '⚙️ apt-get -y install podman'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get -y install podman
+
+      # - name: 'Build the container lfmp-build-${{ matrix.distro }}'
+      #   run: >
+      #     podman build
+      #     --file "./repos/monitoring-plugins/build/containerfiles/${{ matrix.distro }}"
+      #     --tag "lfmp-build-${{ matrix.distro }}"
+
+
+      # - name: 'Find and download latest version artifact'
+      #   run: >
+      #     /bin/bash
+      #     ./repos/monitoring-plugins/build/shared/get-latest-version.sh
+      #     $GITHUB_REPOSITORY
+      #     ${{ secrets.GITHUB_TOKEN }}
+
+
+      # - name: 'mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/{compiled,dist}'
+      #   run: |
+      #     mkdir -p $RUNNER_TEMP/${{ matrix.distro }}/{compiled,dist}
+
+      # - name: 'Compile the plugins in container lfmp-build-${{ matrix.distro }}'
+      #   run: >
+      #     podman run
+      #     --rm
+      #     --mount type=bind,source=$RUNNER_TEMP/${{ matrix.distro }}/compiled,destination=/compiled,relabel=private
+      #     --mount type=bind,source=./repos,destination=/repos,relabel=shared,ro=true
+      #     "lfmp-build-${{ matrix.distro }}"
+      #     /bin/bash
+      #     /repos/monitoring-plugins/build/shared/compile-multiple.sh
+      #     /compiled
+      #     /repos/lib
+      #     /repos/monitoring-plugins/check-plugins
+      #     ${{ inputs.check-plugins }}
+
+      # - name: 'Merge the compiled plugins into one folder'
+      #   shell: 'bash'
+      #   run: >
+      #     /bin/bash
+      #     ./repos/monitoring-plugins/build/shared/merge-directories.sh
+      #     $RUNNER_TEMP/${{ matrix.distro }}/compiled
+      #     $RUNNER_TEMP/${{ matrix.distro }}/dist
+
+
+      # - name: 'Set up Ruby'
+      #   uses: 'ruby/setup-ruby@v1'
+      #   with:
+      #     ruby-version: '3.4'
+
+      # - name: 'Install FPM gem'
+      #   run: |
+      #     sudo gem install fpm
+
+      # - name: 'Verify FPM installation'
+      #   run: 'fpm --version'
+
+      # - name: '⚙️ apt-get -y install squashfs-tools'
+      #   run: |
+      #     sudo apt-get install squashfs-tools
+      #     sudo apt-get install rpm
+
+      # - name: 'Create the .fpm file for the check-plugins'
+      #   shell: 'bash'
+      #   run: >
+      #     /bin/bash
+      #     ./repos/monitoring-plugins/build/shared/create-fpm-cp.sh
+      #     $RUNNER_TEMP/cp/.fpm
+      #     ${{ env.VERSION }}
+      #     $RUNNER_TEMP/dist
+
+
+
+      # - name: 'Upload build output'
+      #   uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+      #   with:
+      #     path: '${{ runner.temp }}/${{ matrix.distro }}/dist/*'
+      #     name: "lfmp-${{ env.VERSION }}-${{ inputs.package-iteration }}.${{ matrix.distro }}.${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}"

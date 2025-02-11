@@ -47,7 +47,7 @@ jobs:
 
       - name: 'Create Version Bump Script'
         run: |
-          cat <<EOF > bump_version.py
+          cat > bump_version.py <<EOF
           import os
           import subprocess
           import re
