@@ -39,6 +39,7 @@ for PLUGINS in check-plugins notification-plugins event-plugins; do
             echo "✅ Directory /repos/$PLUGINS/$PLUGIN does not exist. Ignoring..."
         fi
     done
+    LFMP_COMPILE_PLUGINS=""
 done
 
 # On RHEL? Then also compile the Linuxfabrik Type Enforcement Policy

@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       compile-plugins:
-        description: 'Space-separated list of check plugins to compile and package. Leave empty to build all plugins.'
+        description: 'Space-separated list of check plugins to compile and package, for example "cpu-usage feed scanrootkit". Leave empty to build all plugins.'
         required: false
         default: 'cpu-usage feed scanrootkit'
       target-distros:
-        description: 'Space-separated list of operating systems to build on. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`. Cannot be empty.'
+        description: 'Space-separated list of operating systems to compile on and build packages for. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`. Cannot be empty.'
         required: false
-        default: 'rocky8 rocky9'
+        default: 'debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404'
       package-iteration:
         description: 'The iteration number for the package (usually "1").'
         required: false
