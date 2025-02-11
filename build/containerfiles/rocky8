@@ -9,10 +9,9 @@ RUN dnf --assumeyes install --nodocs gcc zip binutils && \
     dnf clean all
 
 # for nuitka
-# codeready is already enabled inside ubi
-RUN dnf --assumeyes install --nodocs https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+RUN /usr/bin/crb enable && \
+    dnf --assumeyes install --nodocs https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     dnf clean all
-# RUN dnf --assumeyes install epel-release dnf-plugins-core && dnf config-manager --set-enabled powertools && dnf clean all
 RUN dnf --assumeyes install --nodocs patchelf ccache && \
     dnf clean all
 

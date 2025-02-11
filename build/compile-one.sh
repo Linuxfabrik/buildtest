@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 2025021104
 
-# This runs in a container.
+# This script can run in a container (absolute paths) or in a Windows-VM.
 
 set -e -x
 
@@ -32,6 +32,7 @@ fi
 echo "✅ Compiling $PLUGIN..."
 
 if ! uname -a | grep -q "_NT"; then
+    # We are in a container.
     source /opt/venv/bin/activate
 fi
 python3 -m nuitka \

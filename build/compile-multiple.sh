@@ -20,10 +20,11 @@ if [[ ! -d "$REPO_DIR/lib" ]]; then
 fi
 
 if ! uname -a | grep -q "_NT"; then
+    # We are in a container.
     source /opt/venv/bin/activate
+    python3 -m pip install --requirement="$REPO_DIR/monitoring-plugins/requirements.txt" --require-hashes
 fi
 python3 --version
-python3 -m pip install --requirement="$REPO_DIR/monitoring-plugins/requirements.txt" --require-hashes
 
 # Loop through each plugin in the list.
 for PLUGINS in check-plugins notification-plugins event-plugins; do
