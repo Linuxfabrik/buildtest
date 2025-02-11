@@ -9,7 +9,7 @@ for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
             mkdir -p $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/$PLUGINS
             # directory exists and is not empty
             echo "cp --archive $LFMP_DIR_COMPILED/$LFMP_TARGET_DISTRO/$PLUGINS/*.dist/. $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/$PLUGINS/"
-            cp --archive $LFMP_DIR_COMPILED/$LFMP_TARGET_DISTRO/$PLUGINS/*.dist/. $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/$PLUGINS/
+            \cp --archive $LFMP_DIR_COMPILED/$LFMP_TARGET_DISTRO/$PLUGINS/*.dist/. $LFMP_DIR_DIST/$LFMP_TARGET_DISTRO/$PLUGINS/
         fi
     done
 done
