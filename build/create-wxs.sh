@@ -23,7 +23,7 @@ cat > "$LFMP_DIR_PACKAGED/lfmp.wxs" << EOF
                                 <Component Id="Icinga2ServiceControl" Guid="{7e398e63-b894-47d1-9375-eea744988032}">
                                     <ServiceControl
                                         Id="icinga2"
-                                        Name="Icinga 2"
+                                        Name="icinga2"
                                         Start="both"
                                         Stop="both"
                                         Wait="yes"/>
@@ -40,7 +40,7 @@ cat > "$LFMP_DIR_PACKAGED/lfmp.wxs" << EOF
 EOF
 echo $(cat "$LFMP_DIR_PACKAGED/lfmp.wxs")
 
-# See
+# The above file is WiX v5 syntax. See the older docs:
 # * https://docs.firegiant.com/wix3/xsd/wix/product/
 # * https://docs.firegiant.com/wix3/xsd/wix/package/
 # * https://docs.firegiant.com/wix3/xsd/wix/component/
