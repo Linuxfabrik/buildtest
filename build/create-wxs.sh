@@ -15,7 +15,7 @@ cat > "$LFMP_DIR_PACKAGED/lfmp.wxs" << EOF
       <MediaTemplate EmbedCab="yes" />
 
       <!-- https://docs.firegiant.com/wix3/xsd/wix/servicecontrol/ -->
-      <!-- Stop/Start Icinga-Agent on Install/Uninstall
+      <!-- Stop/Start Icinga-Agent on Install/Uninstall -->
       <ServiceControl
           Id="icinga2"
           Name="Icinga 2"
