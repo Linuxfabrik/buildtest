@@ -34,8 +34,8 @@ python3 -m nuitka \
     $ADDITIONAL_PARAMS \
     $REPO_DIR/monitoring-plugins/$PLUGINS/$PLUGIN/$PLUGIN
 
+# rename files
 if [[ -e "$COMPILE_DIR/$PLUGINS/$PLUGIN.dist/$PLUGIN.bin" ]]; then
-    # On Linux, compiled files get the ".bin" extension.
-    # On Windows, compiled files automatically get the ".exe" extension.
+    # happens on Linux
     mv "$COMPILE_DIR/$PLUGINS/$PLUGIN.dist/$PLUGIN.bin" "$COMPILE_DIR/$PLUGINS/$PLUGIN.dist/$PLUGIN"
 fi

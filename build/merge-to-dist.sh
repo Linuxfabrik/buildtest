@@ -7,8 +7,8 @@ if uname -a | grep -q "_NT"; then
     # We are on Windows.
     mkdir -p "$LFMP_DIR_DIST"
     cd "$LFMP_DIR_COMPILED"
-    for dir in */*; do
-        \cp --recursive --verbose "$dir"* "$LFMP_DIR_DIST"/
+    for dir in *; do
+        \cp --archive "$dir"/* "$LFMP_DIR_DIST"/
     done
 else
     # We are on the Ubuntu VM (not in the container).
