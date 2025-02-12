@@ -1,7 +1,7 @@
 Check scanrootkit
 =================
 
-Overview
+Overview 2.1.7.127
 --------
 
 This monitoring plugin scans for round about 100 rootkits, from "55808 Trojan - Variant A" to "ZK Rootkit". New rootkit definitions can be easily added by dropping a `scanrootkit-<name>` YAML file into the `assets` folder.
