@@ -85,7 +85,7 @@ jobs:
           # Determine version bump type
           bump_type = "revision"
           for msg in commit_messages:
-              if "BREAKING CHANGE" in msg or re.search(r"(feat|fix)!:", msg):
+              if "BREAKING CHANGE" in msg or re.search(r"!:", msg):
                   bump_type = "major"
                   break
               elif msg.startswith("feat:"):
