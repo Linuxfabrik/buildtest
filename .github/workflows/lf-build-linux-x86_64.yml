@@ -11,4 +11,4 @@ jobs:
     runs-on:
       - 'ubuntu-24.04'
     steps:
-      - uses: '${{ github.repository }}/lf-linux-build@8a8c7e1d4ca2d442ccffe73486c5c8bdbee59719'
+      - uses: 'lf-linux-build'
