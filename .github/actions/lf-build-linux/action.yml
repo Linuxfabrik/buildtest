@@ -1,21 +1,22 @@
 name: 'Linuxfabrik: Build Linux (composite)'
-description: 'Composite action to build the Linuxfabrik Monitoring Plugins an any Ubuntu-based platform'
 
 inputs:
   compile-plugins:
     description: 'Space-separated list of check plugins to compile and package, for example "cpu-usage feed scanrootkit". Leave empty to build all plugins.'
-    required: true
+    required: false
+    default: ''
   target-distros:
     description: 'Space-separated list of operating systems to compile on and build packages for. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`. Cannot be empty.'
-    required: true
+    required: false
     default: 'debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404'
   package-iteration:
     description: 'The iteration number for the package (usually "1").'
-    required: true
+    required: false
     default: '1'
   lib-repo-ref:
     description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
-    required: true
+    required: false
+    default: ''
 
 build-runs:
   using: 'composite'
@@ -23,9 +24,9 @@ build-runs:
     - name: 'Set environment variables for the build scripts'
       run: |
         echo "LFMP_ARCH=x86_64" >> $GITHUB_ENV
-        echo "LFMP_COMPILE_PLUGINS=${{ inputs.compile-plugins }}" >> $GITHUB_ENV
-        echo "LFMP_PACKAGE_ITERATION=${{ inputs.package-iteration }}" >> $GITHUB_ENV
-        echo "LFMP_TARGET_DISTROS=${{ inputs.target-distros }}" >> $GITHUB_ENV
+        echo "LFMP_COMPILE_PLUGINS=${{ github.event.inputs.compile-plugins }}" >> $GITHUB_ENV
+        echo "LFMP_PACKAGE_ITERATION=${{ github.event.inputs.package-iteration }}" >> $GITHUB_ENV
+        echo "LFMP_TARGET_DISTROS=${{ github.event.inputs.target-distros }}" >> $GITHUB_ENV
 
         echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
 
