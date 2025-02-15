@@ -2,6 +2,23 @@ name: 'Linuxfabrik: Build Linux (x86_64)'
 
 on:
   workflow_dispatch:
+    inputs:
+      compile-plugins:
+        description: 'Space-separated list of check plugins to compile and package, for example "cpu-usage feed scanrootkit". Leave empty to build all plugins.'
+        required: false
+        default: ''
+      target-distros:
+        description: 'Space-separated list of operating systems to compile on and build packages for. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`. Cannot be empty.'
+        required: false
+        default: 'debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404'
+      package-iteration:
+        description: 'The iteration number for the package (usually "1").'
+        required: false
+        default: '1'
+      lib-repo-ref:
+        description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
+        required: false
+        default: ''
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
@@ -13,3 +30,8 @@ jobs:
       - 'ubuntu-24.04'
     steps:
       - uses: './.github/actions/lf-build-linux'
+        with:
+          compile-plugins: '${{ github.event.inputs.compile-plugins }}'
+          target-distros: '${{ github.event.inputs.target-distros }}'
+          package-iteration: '${{ github.event.inputs.package-iteration }}'
+          lib-repo-ref: '${{ github.event.inputs.lib-repo-ref }}'
