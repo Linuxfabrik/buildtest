@@ -50,7 +50,7 @@ jobs:
           mkdir -p $LFMP_DIR_REPOS
           mkdir -p $LFMP_DIR_COMPILED
           mkdir -p $LFMP_DIR_DIST
-          mkdir -p $LFMP_DIR_PACKAGED
+          mkdir -p $LFMP_DIR_PACKAGED/{in,out}
 
       - name: 'git clone https://github.com/Linuxfabrik/THIS-REPO'
         uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # v4.2.2
@@ -132,8 +132,8 @@ jobs:
         run: >
           wix.exe build
           -defaultcompressionlevel high
-          ${{ env.LFMP_DIR_PACKAGED }}\lfmp.wxs
-          -out ${{ env.LFMP_DIR_PACKAGED }}\linuxfabrik-monitoring-plugins.msi
+          ${{ env.LFMP_DIR_PACKAGED }}\in\lfmp.wxs
+          -out ${{ env.LFMP_DIR_PACKAGED }}\out\linuxfabrik-monitoring-plugins.msi
 
       - name: 'Upload the package (msi)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0

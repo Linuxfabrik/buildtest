@@ -2,7 +2,7 @@
 
 set -e -x
 
-cat > "$LFMP_DIR_PACKAGED/lfmp.wxs" << EOF
+cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Package
         Name="Linuxfabrik Monitoring Plugins"
