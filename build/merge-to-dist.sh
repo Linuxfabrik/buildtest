@@ -5,7 +5,7 @@ set -e -x
 
 if uname -a | grep -q "_NT"; then
     mkdir -p $LFMP_DIR_DIST
-    for d in $LFMP_DIR_COMPILED/$PLUGINS/*.dist; do
+    for d in $LFMP_DIR_COMPILED/check-plugins/*.dist; do
         cp --recursive "$d"/* $LFMP_DIR_DIST/
     done
 else
