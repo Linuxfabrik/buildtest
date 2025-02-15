@@ -38,7 +38,7 @@ cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
     </Package>
 </Wix>
 EOF
-echo $(cat "$LFMP_DIR_PACKAGED/lfmp.wxs")
+echo $(cat "$LFMP_DIR_PACKAGED/in/lfmp.wxs")
 
 # The above file is WiX v5 syntax. See the older docs:
 # * https://docs.firegiant.com/wix3/xsd/wix/product/
