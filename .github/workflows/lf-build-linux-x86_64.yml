@@ -1,6 +1,7 @@
 name: 'Linuxfabrik: Build Linux (x86_64)'
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
 
 # modify the default permissions granted to the GITHUB_TOKEN
 permissions:
