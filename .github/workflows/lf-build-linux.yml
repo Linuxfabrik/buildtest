@@ -1,4 +1,4 @@
-name: 'Linuxfabrik: Build Linux (composite)'
+name: 'Linuxfabrik: Build Linux (x86_64)'
 
 inputs:
   compile-plugins:
