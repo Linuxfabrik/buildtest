@@ -29,6 +29,11 @@ jobs:
     runs-on:
       - 'ubuntu-24.04'
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: 'Set environment variables for the build scripts'
         run: |
           echo "LFMP_ARCH=x86_64" >> $GITHUB_ENV
