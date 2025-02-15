@@ -8,6 +8,4 @@ on:
 jobs:
   versioning:
     uses: 'Linuxfabrik/autoinc-semver/.github/workflows/autoinc-semver.yml@main'
-    secrets:
-      GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
- 
+    secrets: 'inherit'
