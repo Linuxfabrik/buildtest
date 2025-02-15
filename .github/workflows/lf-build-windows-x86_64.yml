@@ -29,6 +29,11 @@ jobs:
     runs-on:
       - 'windows-2025'  # https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          egress-policy: audit
+
       - name: 'Set environment variables for the build scripts'
         shell: 'bash'
         run: |
@@ -114,7 +119,7 @@ jobs:
           name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.compiled.${{ env.LFMP_ARCH }}"
 
       - name: 'Configure MSBuild in the workflow PATH for building .NET Framework applications'
-        uses: 'microsoft/setup-msbuild@v2'
+        uses: 'microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0'
 
       - name: 'Install WiX toolset, the packaging tool'
         run: 'dotnet tool install --global wix'
