@@ -5,10 +5,7 @@ set -e -x
 
 if uname -a | grep -q "_NT"; then
     mkdir -p $LFMP_DIR_DIST
-    for d in $LFMP_DIR_COMPILED/check-plugins/*.dist; do
-        echo "cp --recursive $d/* $LFMP_DIR_DIST/"
-        cp --recursive $d/* $LFMP_DIR_DIST/
-    done
+    \cp --archive $LFMP_DIR_COMPILED/check-plugins/*.dist/. $LFMP_DIR_DIST/
 else
     # We are on the Ubuntu VM (not in the container).
     for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
