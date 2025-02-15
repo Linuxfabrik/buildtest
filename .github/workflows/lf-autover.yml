@@ -9,3 +9,4 @@ jobs:
   versioning:
     uses: 'Linuxfabrik/autoinc-semver/.github/workflows/autoinc-semver.yml@main'
     secrets: 'inherit'
+ 
