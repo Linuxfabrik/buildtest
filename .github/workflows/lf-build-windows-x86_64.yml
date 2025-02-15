@@ -110,7 +110,6 @@ jobs:
         shell: 'bash'
         run: |
           cd $LFMP_DIR_COMPILED
-          mkdir $LFMP_DIR_DIST
           for dir in */*/; do
               echo "dir: $dir"
               echo cp -rv $dir* $LFMP_DIR_DIST/
