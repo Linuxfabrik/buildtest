@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
-# 2025021001
+# 2025021501
 
 set -e -x
 
 if uname -a | grep -q "_NT"; then
-    # We are on Windows.
-    mkdir -p "$LFMP_DIR_DIST"
-    cd "$LFMP_DIR_COMPILED"
-    for dir in *; do
-        \cp --archive "$dir"/* "$LFMP_DIR_DIST"/
-    done
+    mkdir -p $LFMP_DIR_DIST
+    echo "cp --archive $LFMP_DIR_COMPILED/*.dist/. $LFMP_DIR_DIST/"
+    \cp --archive $LFMP_DIR_COMPILED/*.dist/. $LFMP_DIR_DIST/
 else
     # We are on the Ubuntu VM (not in the container).
     for LFMP_TARGET_DISTRO in $LFMP_TARGET_DISTROS; do
