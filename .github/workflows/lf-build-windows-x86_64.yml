@@ -7,10 +7,10 @@ on:
         description: 'Space-separated list of check plugins to compile and package, for example "cpu-usage feed scanrootkit". Leave empty to build all plugins.'
         required: false
         default: ''
-      target-distros:
-        description: 'Space-separated list of operating systems to compile on and build packages for. Supported: `windows`. Cannot be empty.'
-        required: true
-        default: 'windows'
+      # target-distros:
+      #   description: 'Space-separated list of operating systems to compile on and build packages for. Supported: `windows`. Cannot be empty.'
+      #   required: true
+      #   default: 'windows'
       package-iteration:
         description: 'The iteration number for the package (usually "1").'
         required: true
