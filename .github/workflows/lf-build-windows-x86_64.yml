@@ -107,10 +107,15 @@ jobs:
           $LFMP_DIR_REPOS/monitoring-plugins/build/compile-multiple.sh
 
       - name: 'Move and merge the relevant parts into $LFMP_DIR_DIST, the folder to build packages from'
+        shell: 'bash'
         run: |
-          for /d %%d in ("${{ env.LFMP_DIR_COMPILED }}\check-plugins\*.dist") do (
-            robocopy "%%d" "${{ env.LFMP_DIR_DIST }}" /E /COPYALL /LOG:C:\Logs\robocopy.log
-          )
+          cd $LFMP_DIR_COMPILED
+          mkdir $LFMP_DIR_DIST
+          for dir in */*/; do
+              echo "dir: $dir"
+              echo cp -rv $dir* $LFMP_DIR_DIST/
+              cp -rv $dir* $LFMP_DIR_DIST/
+          done
 
       - name: 'Upload the compiled plugins'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
