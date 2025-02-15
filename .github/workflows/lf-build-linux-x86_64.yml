@@ -9,11 +9,11 @@ on:
         default: ''
       target-distros:
         description: 'Space-separated list of operating systems to compile on and build packages for. Supported: `debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404`. Cannot be empty.'
-        required: false
+        required: true
         default: 'debian11 debian12 rocky8 rocky9 ubuntu2004 ubuntu2204 ubuntu2404'
       package-iteration:
         description: 'The iteration number for the package (usually "1").'
-        required: false
+        required: true
         default: '1'
       lib-repo-ref:
         description: 'The branch, tag, or SHA to checkout from the lib repo. Defaults to the current branch or tag.'
@@ -87,12 +87,6 @@ jobs:
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/merge-to-dist.sh
 
-      - name: 'Upload the compiled plugins'
-        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
-        with:
-          path: '${{ env.LFMP_DIR_DIST }}/*'
-          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.compiled.${{ env.LFMP_ARCH }}"
-
       - name: 'Install FPM, the packaging tool'
         run: >
           /bin/bash
@@ -107,6 +101,12 @@ jobs:
         run: >
           /bin/bash
           $LFMP_DIR_REPOS/monitoring-plugins/build/create-packages.sh
+
+      - name: 'Upload the compiled plugins'
+        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+        with:
+          path: '${{ env.LFMP_DIR_DIST }}/*'
+          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.compiled.${{ env.LFMP_ARCH }}"
 
       - name: 'Upload the packages (rpm, deb, tar, zip)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
