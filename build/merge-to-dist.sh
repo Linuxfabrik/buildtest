@@ -5,6 +5,7 @@ set -e -x
 
 if uname -a | grep -q "_NT"; then
     mkdir -p $LFMP_DIR_DIST
+    echo "\cp --archive $LFMP_DIR_COMPILED/check-plugins/*.dist/. $LFMP_DIR_DIST/"
     \cp --archive $LFMP_DIR_COMPILED/check-plugins/*.dist/. $LFMP_DIR_DIST/
 else
     # We are on the Ubuntu VM (not in the container).
