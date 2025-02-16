@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 2025021104
+# 2025021602
 
 # This script can run in a container (absolute paths) or in a Windows-VM.
 
@@ -13,12 +13,6 @@ else
     REPO_DIR="/repos"
 fi
 
-if [[ ! -d "$REPO_DIR/lib" ]]; then
-    echo "❌ The Python libraries (https://github.com/Linuxfabrik/lib) could not be found at $REPO_DIR/lib."
-    echo "❌ They should be in a directory called 'lib' on the same level as the monitoring-plugins directory."
-    exit 2
-fi
-
 if ! uname -a | grep -q "_NT"; then
     # We are in a container.
     source /opt/venv/bin/activate
@@ -27,7 +21,12 @@ fi
 python3 --version
 
 # Loop through each plugin in the list.
-for PLUGINS in check-plugins notification-plugins event-plugins; do
+for PLUGINS in event-plugins notification-plugins check-plugins ; do
+    if [[ ! -z "$LFMP_COMPILE_PLUGINS" && "$PLUGINS" != "check-plugins" ]]; then
+        # if check-plugin list is given, skip event-plugins and notification-plugins to save time
+        echo "✅ Skipping $REPO_DIR/monitoring-plugins/$PLUGINS..."
+        continue
+    fi
     if [[ ! -d "$REPO_DIR/monitoring-plugins/$PLUGINS" ]]; then
         echo "✅ $REPO_DIR/monitoring-plugins/$PLUGINS does not exist, ignoring..."
         continue
@@ -47,9 +46,7 @@ for PLUGINS in check-plugins notification-plugins event-plugins; do
         if [ "$PLUGIN" == "example" ]; then
             continue
         fi
-        echo "✅ Processing $PLUGIN"
         if [[ -d "$REPO_DIR/monitoring-plugins/$PLUGINS/$PLUGIN" ]]; then
-            echo $(pwd)
             bash $(dirname "$0")/compile-one.sh $PLUGINS $PLUGIN
         else
             echo "✅ Directory $REPO_DIR/$PLUGINS/$PLUGIN does not exist. Ignoring..."
@@ -66,4 +63,5 @@ mkdir /tmp/selinux
 cp $REPO_DIR/monitoring-plugins/assets/selinux/linuxfabrik-monitoring-plugins.te /tmp/selinux/
 cd /tmp/selinux/
 make --file /usr/share/selinux/devel/Makefile linuxfabrik-monitoring-plugins.pp
-\cp --archive linuxfabrik-monitoring-plugins.pp /compiled/check-plugins
+mkdir -p /compiled/check-plugins/assets/
+\cp --archive linuxfabrik-monitoring-plugins.pp /compiled/check-plugins/assets/
