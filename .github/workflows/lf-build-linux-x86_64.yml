@@ -146,14 +146,9 @@ jobs:
         with:
           path: '/tmp/artifacts'
 
-      - name: 'Fetch the current version from Github'
-        run: >
-          /bin/bash
-          $LFMP_DIR_REPOS/monitoring-plugins/build/get-latest-version.sh
-
       - name: 'Upload the final result (one file)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
           compression-level: 7
           path: '/tmp/artifacts/*'
-          name: "lfmp-${{ env.LFMP_VERSION }}"
+          name: "lfmp"
