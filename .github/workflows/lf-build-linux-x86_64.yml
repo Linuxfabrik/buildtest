@@ -32,7 +32,7 @@ jobs:
     # Use the split() function to convert the space-separated string into an array.
     strategy:
       matrix:
-        distro: ${{ fromJson('["' + replace(github.event.inputs.target-distros, ' ', '","') + '"]') }}
+        distro: ${{ split(github.event.inputs.target-distros, ' ') }}
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
