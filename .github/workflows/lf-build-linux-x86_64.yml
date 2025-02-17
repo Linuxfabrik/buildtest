@@ -31,6 +31,8 @@ jobs:
     outputs:
       distro_list: '${{ steps.set-matrix.outputs.distro_list }}'
     steps:
+      # Transform the space‐separated string into a valid JSON array using shell commands (with sed),
+      # then pass that result as an output to be used in the matrix of a subsequent job.
       - id: set-matrix
         run: |
           # Grab the space-separated input value
@@ -64,7 +66,7 @@ jobs:
           echo "LFMP_COMPILE_PLUGINS=${{ github.event.inputs.compile-plugins }}" >> $GITHUB_ENV
           echo "LFMP_PACKAGE_ITERATION=${{ github.event.inputs.package-iteration }}" >> $GITHUB_ENV
 
-          # Each matrix job gets one distro value.
+          # Each matrix job gets one distro value here (to parallelize job runs and avoiding Github's 6h timeout).
           echo "LFMP_TARGET_DISTROS=${{ matrix.distro }}" >> $GITHUB_ENV
 
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
@@ -123,10 +125,10 @@ jobs:
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
           path: '${{ env.LFMP_DIR_COMPILED }}/*'
-          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.compiled.${{ env.LFMP_ARCH }}"
+          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.compiled.${{ env.LFMP_ARCH }}.${{ env.LFMP_TARGET_DISTROS }}"
 
       - name: 'Upload the packages (rpm, deb, tar, zip)'
         uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
         with:
           path: '${{ env.LFMP_DIR_PACKAGED }}/*'
-          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.packaged.${{ env.LFMP_ARCH }}"
+          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.packaged.${{ env.LFMP_ARCH }}.${{ env.LFMP_TARGET_DISTROS }}"
