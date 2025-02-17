@@ -132,3 +132,20 @@ jobs:
         with:
           path: '${{ env.LFMP_DIR_PACKAGED }}/*'
           name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.packaged.${{ env.LFMP_ARCH }}.${{ env.LFMP_TARGET_DISTROS }}"
+
+  upload-artifacts-x86_64:
+    needs: 'build-linux-x86_64'
+    runs-on:
+      - 'ubuntu-24.04'
+
+    steps:
+      - name: 'Download all artifacts'
+        uses: 'actions/download-artifact@v4'
+        with:
+          path: '/tmp/artifacts'
+
+      - name: 'Upload the final result (one file)'
+        uses: 'actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08' # v4.6.0
+        with:
+          path: '/tmp/artifacts/*'
+          name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.${{ env.LFMP_ARCH }}"
