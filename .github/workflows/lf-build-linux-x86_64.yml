@@ -28,7 +28,12 @@ jobs:
   build-linux-x86_64:
     runs-on:
       - 'ubuntu-24.04'
-    timeout-minutes: 1440  # 24 hours, default is 360 minutes / 6 hours
+
+    # Use the split() function to convert the space-separated string into an array.
+    strategy:
+      matrix:
+        distro: "${{ split(github.event.inputs.target-distros, ' ') }}"
+
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
@@ -40,7 +45,9 @@ jobs:
           echo "LFMP_ARCH=x86_64" >> $GITHUB_ENV
           echo "LFMP_COMPILE_PLUGINS=${{ github.event.inputs.compile-plugins }}" >> $GITHUB_ENV
           echo "LFMP_PACKAGE_ITERATION=${{ github.event.inputs.package-iteration }}" >> $GITHUB_ENV
-          echo "LFMP_TARGET_DISTROS=${{ github.event.inputs.target-distros }}" >> $GITHUB_ENV
+
+          # In each job, LFMP_TARGET_DISTROS gets a single distro value from the matrix.
+          echo "LFMP_TARGET_DISTROS=${{ matrix.distro }}" >> $GITHUB_ENV
 
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
 
