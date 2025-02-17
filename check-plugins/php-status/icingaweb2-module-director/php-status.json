@@ -1,0 +1,529 @@
+{
+    "Command": {
+        "cmd-check-php-status": {
+            "arguments": {
+                "--always-ok": {
+                    "set_if": "$php_status_always_ok$"
+                },
+                "--critical": {
+                    "value": "$php_status_critical$"
+                },
+                "--config": {
+                    "value": "$php_status_config$",
+                    "repeat_key": true
+                },
+                "--dev": {
+                    "set_if": "$php_status_dev$"
+                },
+                "--module": {
+                    "value": "$php_status_module$",
+                    "repeat_key": true
+                },
+                "--insecure": {
+                    "set_if": "$php_status_insecure$"
+                },
+                "--no-proxy": {
+                    "set_if": "$php_status_no_proxy$"
+                },
+                "--timeout": {
+                    "value": "$php_status_timeout$"
+                },
+                "--url": {
+                    "value": "$php_status_url$"
+                },
+                "--warning": {
+                    "value": "$php_status_warning$"
+                }
+            },
+            "command": "/usr/bin/sudo /usr/lib64/nagios/plugins/php-status",
+            "disabled": false,
+            "fields": [
+                {
+                    "datafield_id": 1,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 2,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 3,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 4,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 5,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 6,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 7,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 8,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 9,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 10,
+                    "is_required": "n",
+                    "var_filter": null
+                }
+            ],
+            "imports": [],
+            "is_string": null,
+            "methods_execute": "PluginCheck",
+            "object_name": "cmd-check-php-status",
+            "object_type": "object",
+            "timeout": "10",
+            "vars": {},
+            "zone": null,
+            "uuid": "160b7f74-f87c-43e3-9562-9d23460c4ea9"
+        },
+        "cmd-check-php-status-windows": {
+            "arguments": {
+                "--always-ok": {
+                    "set_if": "$php_status_windows_always_ok$"
+                },
+                "--critical": {
+                    "value": "$php_status_windows_critical$"
+                },
+                "--config": {
+                    "value": "$php_status_windows_config$",
+                    "repeat_key": true
+                },
+                "--dev": {
+                    "set_if": "$php_status_windows_dev$"
+                },
+                "--module": {
+                    "value": "$php_status_windows_module$",
+                    "repeat_key": true
+                },
+                "--insecure": {
+                    "set_if": "$php_status_windows_insecure$"
+                },
+                "--no-proxy": {
+                    "set_if": "$php_status_windows_no_proxy$"
+                },
+                "--timeout": {
+                    "value": "$php_status_windows_timeout$"
+                },
+                "--url": {
+                    "value": "$php_status_windows_url$"
+                },
+                "--warning": {
+                    "value": "$php_status_windows_warning$"
+                }
+            },
+            "command": "C:\\ProgramData\\icinga2\\usr\\lib64\\nagios\\plugins\\php-status.exe",
+            "disabled": false,
+            "fields": [
+                {
+                    "datafield_id": 11,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 12,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 13,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 14,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 15,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 16,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 17,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 18,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 19,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 20,
+                    "is_required": "n",
+                    "var_filter": null
+                }
+            ],
+            "imports": [],
+            "is_string": null,
+            "methods_execute": "PluginCheck",
+            "object_name": "cmd-check-php-status-windows",
+            "object_type": "object",
+            "timeout": "10",
+            "vars": {},
+            "zone": null,
+            "uuid": "bfc548ca-8c18-4d1d-a360-9f6482d4bc46"
+        },
+        "cmd-check-php-status-windows-python": {
+            "arguments": {},
+            "command": "C:\\Windows\\py C:\\ProgramData\\icinga2\\usr\\lib64\\nagios\\plugins\\php-status.py",
+            "disabled": false,
+            "fields": [],
+            "imports": [
+                "cmd-check-php-status-windows"
+            ],
+            "is_string": null,
+            "methods_execute": null,
+            "object_name": "cmd-check-php-status-windows-python",
+            "object_type": "object",
+            "timeout": null,
+            "vars": {},
+            "zone": null,
+            "uuid": "a69808b8-efdc-4838-88a3-4604fac492df"
+        }
+    },
+    "ServiceTemplate": {
+        "tpl-service-php-status": {
+            "action_url": null,
+            "apply_for": null,
+            "assign_filter": null,
+            "check_command": "cmd-check-php-status",
+            "check_interval": 60,
+            "check_period": null,
+            "check_timeout": null,
+            "command_endpoint": null,
+            "disabled": false,
+            "display_name": null,
+            "enable_active_checks": null,
+            "enable_event_handler": null,
+            "enable_flapping": null,
+            "enable_notifications": true,
+            "enable_passive_checks": null,
+            "enable_perfdata": true,
+            "event_command": null,
+            "fields": [],
+            "flapping_threshold_high": null,
+            "flapping_threshold_low": null,
+            "groups": [],
+            "host": null,
+            "icon_image": "php-status.png",
+            "icon_image_alt": null,
+            "imports": [
+                "tpl-service-generic"
+            ],
+            "max_check_attempts": 5,
+            "notes": "This plugin checks for PHP startup errors, missing modules and misconfigured php.ini directives.",
+            "notes_url": "https://github.com/Linuxfabrik/monitoring-plugins/tree/main/check-plugins/php-status",
+            "object_name": "tpl-service-php-status",
+            "object_type": "template",
+            "retry_interval": 15,
+            "service_set": null,
+            "template_choice": null,
+            "use_agent": null,
+            "use_var_overrides": null,
+            "vars": {
+                "criticality": "C",
+                "php_status_always_ok": false,
+                "php_status_dev": false,
+                "php_status_insecure": false,
+                "php_status_no_proxy": false,
+                "php_status_timeout": 8,
+                "php_status_warning": 90
+            },
+            "volatile": null,
+            "zone": null,
+            "uuid": "1fdbc86b-c827-472b-b53d-f4ab88a3bba8"
+        },
+        "tpl-service-php-status-windows": {
+            "action_url": null,
+            "apply_for": null,
+            "assign_filter": null,
+            "check_command": "cmd-check-php-status-windows",
+            "check_interval": 60,
+            "check_period": null,
+            "check_timeout": null,
+            "command_endpoint": null,
+            "disabled": false,
+            "display_name": null,
+            "enable_active_checks": null,
+            "enable_event_handler": null,
+            "enable_flapping": null,
+            "enable_notifications": true,
+            "enable_passive_checks": null,
+            "enable_perfdata": null,
+            "event_command": null,
+            "fields": [],
+            "flapping_threshold_high": null,
+            "flapping_threshold_low": null,
+            "groups": [],
+            "host": null,
+            "icon_image": "php-status.png",
+            "icon_image_alt": null,
+            "imports": [
+                "tpl-service-generic"
+            ],
+            "max_check_attempts": 5,
+            "notes": "This plugin checks for PHP startup errors, missing modules and misconfigured php.ini directives.",
+            "notes_url": "https://github.com/Linuxfabrik/monitoring-plugins/tree/main/check-plugins/php-status",
+            "object_name": "tpl-service-php-status-windows",
+            "object_type": "template",
+            "retry_interval": 15,
+            "service_set": null,
+            "template_choice": null,
+            "use_agent": null,
+            "use_var_overrides": null,
+            "vars": {
+                "criticality": "C",
+                "php_status_windows_always_ok": false,
+                "php_status_windows_dev": false,
+                "php_status_windows_insecure": false,
+                "php_status_windows_no_proxy": false,
+                "php_status_windows_timeout": 8,
+                "php_status_windows_warning": 90
+            },
+            "volatile": null,
+            "zone": null,
+            "uuid": "f2d15b13-98da-4b2b-a990-bed45a545b83"
+        }
+    },
+    "Datafield": {
+        "1": {
+            "varname": "php_status_always_ok",
+            "caption": "PHP Status: Always OK?",
+            "description": "Always returns OK.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "9a4136bf-be36-4afa-8078-c208ecac22a0"
+        },
+        "2": {
+            "varname": "php_status_critical",
+            "caption": "PHP Status: Critical",
+            "description": "Set the CRIT threshold for Opcache usage as a percentage.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "162e21e0-3704-4892-bef6-6c4ffac9edbc"
+        },
+        "3": {
+            "varname": "php_status_config",
+            "caption": "PHP Status: Config",
+            "description": "\"key=value\" pairs to check (startswith), for example `--config \"memory_limit=128M\"` (repeating)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeArray",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "d11ee44d-c53d-43e5-9b33-43fba40637b3"
+        },
+        "4": {
+            "varname": "php_status_dev",
+            "caption": "PHP Status: Dev?",
+            "description": "Be more tolerant in development environments: Allow `display_errors=On` and `display_startup_errors=On`.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "61f682f6-f855-4ec4-9a07-052c964c6f7f"
+        },
+        "5": {
+            "varname": "php_status_module",
+            "caption": "PHP Status: Module",
+            "description": "\"modulename\" to check (startswith), for example `--module json --module mbstring` (repeating)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeArray",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "0163dde8-1441-475e-8e3d-2041a7bc9509"
+        },
+        "6": {
+            "varname": "php_status_insecure",
+            "caption": "PHP Status: Insecure?",
+            "description": "This option explicitly allows to perform \"insecure\" SSL connections.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "f03ac94c-1259-4957-85fa-87d501eaf9f8"
+        },
+        "7": {
+            "varname": "php_status_no_proxy",
+            "caption": "PHP Status: No Proxy?",
+            "description": "Do not use a proxy.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "1cdf44d2-2b6b-434b-92d5-41bb2800dc19"
+        },
+        "8": {
+            "varname": "php_status_timeout",
+            "caption": "PHP Status: Timeout",
+            "description": "Network timeout in seconds.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "a45b9da4-1508-46db-b844-7797bcbd97ef"
+        },
+        "9": {
+            "varname": "php_status_url",
+            "caption": "PHP Status: URL",
+            "description": "URL to optional PHP `monitoring.php` script.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "b12706cc-8a72-48e5-a89d-5581ccd96c32"
+        },
+        "10": {
+            "varname": "php_status_warning",
+            "caption": "PHP Status: Warning",
+            "description": "Set the WARN threshold for Opcache usage as a percentage.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "cb56684b-b3d9-47d6-bec7-09479a46bc48"
+        },
+        "11": {
+            "varname": "php_status_windows_always_ok",
+            "caption": "PHP Status: Always OK?",
+            "description": "Always returns OK.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "01dffa2c-ead8-4590-a2c8-30fb882d07ac"
+        },
+        "12": {
+            "varname": "php_status_windows_critical",
+            "caption": "PHP Status: Critical",
+            "description": "Set the CRIT threshold for Opcache usage as a percentage.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "a80d09ac-2830-4751-b073-3d54aa1e438d"
+        },
+        "13": {
+            "varname": "php_status_windows_config",
+            "caption": "PHP Status: Config",
+            "description": "\"key=value\" pairs to check (startswith), for example `--config \"memory_limit=128M\"` (repeating)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeArray",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "ad95da3d-9eca-4352-980c-353b971a57b7"
+        },
+        "14": {
+            "varname": "php_status_windows_dev",
+            "caption": "PHP Status: Dev?",
+            "description": "Be more tolerant in development environments: Allow `display_errors=On` and `display_startup_errors=On`.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "c7dd715b-d618-45c7-ba8f-d5f7ac0c49b9"
+        },
+        "15": {
+            "varname": "php_status_windows_module",
+            "caption": "PHP Status: Module",
+            "description": "\"modulename\" to check (startswith), for example `--module json --module mbstring` (repeating)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeArray",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "abb6dbb3-289c-479c-8f83-ee8b5c9c99ff"
+        },
+        "16": {
+            "varname": "php_status_windows_insecure",
+            "caption": "PHP Status: Insecure?",
+            "description": "This option explicitly allows to perform \"insecure\" SSL connections.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "c247f3d1-9e95-4fb7-beb1-55bb00cda1f3"
+        },
+        "17": {
+            "varname": "php_status_windows_no_proxy",
+            "caption": "PHP Status: No Proxy?",
+            "description": "Do not use a proxy.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "uuid": "bc759ac3-9718-4197-97ca-edfe9c69d2b4"
+        },
+        "18": {
+            "varname": "php_status_windows_timeout",
+            "caption": "PHP Status: Timeout",
+            "description": "Network timeout in seconds.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "8f8a2605-37be-4cde-95e2-573fd4384f58"
+        },
+        "19": {
+            "varname": "php_status_windows_url",
+            "caption": "PHP Status: URL",
+            "description": "URL to optional PHP `monitoring.php` script.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "faaf5e78-9aae-416c-a829-6089ae57ac7d"
+        },
+        "20": {
+            "varname": "php_status_windows_warning",
+            "caption": "PHP Status: Warning",
+            "description": "Set the WARN threshold for Opcache usage as a percentage.",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "uuid": "f39069ee-2189-4a67-a051-a6a31fa4aaef"
+        }
+    }
+}
