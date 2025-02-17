@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 2025021701
+# 2025021702
 
 # This script can run in a container (absolute paths) or in a Windows-VM.
 
@@ -68,4 +68,4 @@ cp $REPO_DIR/monitoring-plugins/assets/selinux/linuxfabrik-monitoring-plugins.te
 cd /tmp/selinux/
 make --file /usr/share/selinux/devel/Makefile linuxfabrik-monitoring-plugins.pp
 mkdir -p /compiled/check-plugins/assets/
-\cp --archive linuxfabrik-monitoring-plugins.pp /compiled/check-plugins/assets/
+\cp --archive linuxfabrik-monitoring-plugins.pp /compiled/assets/

@@ -135,7 +135,7 @@ jobs:
           path: '${{ env.LFMP_DIR_PACKAGED }}/*'
           name: "lfmp-${{ env.LFMP_VERSION }}-${{ env.LFMP_PACKAGE_ITERATION }}.packaged.${{ env.LFMP_ARCH }}.${{ env.LFMP_TARGET_DISTROS }}"
 
-  upload-artifacts-x86_64:
+  upload-artifacts:
     needs: 'build-linux-x86_64'
     runs-on:
       - 'ubuntu-24.04'
