@@ -38,7 +38,11 @@ for PLUGINS in event-plugins notification-plugins check-plugins ; do
     if [[ -z "$LFMP_COMPILE_PLUGINS" ]]; then
         echo "✅ No plugin list provided. Discovering all plugins..."
         # Find directories immediately under $PLUGINS/, extract their basenames, and join them with commas.
-        LFMP_COMPILE_PLUGINS=$(find "$REPO_DIR/monitoring-plugins/$PLUGINS" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort)
+        LFMP_COMPILE_PLUGINS=$(
+            for d in "$REPO_DIR/monitoring-plugins/$PLUGINS"/*; do
+                [ -d "$d" ] && basename "$d"
+            done | sort
+        )  # avoid using `find` as this is sometimes problematic in Github runners
         echo "✅ Found '$LFMP_COMPILE_PLUGINS'"
     fi
 
