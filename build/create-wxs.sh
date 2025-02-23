@@ -14,7 +14,7 @@ cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
 
         <MediaTemplate EmbedCab="yes" />
 
-        <StandardDirectory Id="ProgramFiles64Folder" Name="PFiles64">
+        <StandardDirectory Id="ProgramFiles64Folder">
             <Directory Id="Icinga2Dir" Name="icinga2">
                 <Directory Id="SBinDir" Name="sbin">
                     <Directory Id="LinuxfabrikDir" Name="linuxfabrik">
