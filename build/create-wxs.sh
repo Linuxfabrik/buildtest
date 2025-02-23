@@ -10,6 +10,7 @@ cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
         Manufacturer="Linuxfabrik GmbH"
         Version="$LFMP_VERSION"
         InstallerVersion="200"
+        Platform="x64"
         UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}">
 
         <MediaTemplate EmbedCab="yes" />
