@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 2025022302
+# 2025022303
 
 set -e -x
 
@@ -9,7 +9,6 @@ cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
         Name="Linuxfabrik Monitoring Plugins"
         Manufacturer="Linuxfabrik GmbH"
         Version="$LFMP_VERSION"
-        Platform="x64"
         UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}">
 
         <MediaTemplate EmbedCab="yes" />
