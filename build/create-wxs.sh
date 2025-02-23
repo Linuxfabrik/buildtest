@@ -10,11 +10,11 @@ cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
         Manufacturer="Linuxfabrik GmbH"
         Version="$LFMP_VERSION"
         Platform="x64"
-        UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}"/>
+        UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}">
 
         <MediaTemplate EmbedCab="yes" />
 
-        <StandardDirectory Id="ProgramFiles64Folder">
+        <StandardDirectory Id="ProgramFiles64Folder" Name="PFiles64">
             <Directory Id="Icinga2Dir" Name="icinga2">
                 <Directory Id="SBinDir" Name="sbin">
                     <Directory Id="LinuxfabrikDir" Name="linuxfabrik">
