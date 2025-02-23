@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 2025021602
+# 2025022302
 
 set -e -x
 
@@ -7,30 +7,27 @@ cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Package
         Name="Linuxfabrik Monitoring Plugins"
-        Version="$LFMP_VERSION"
         Manufacturer="Linuxfabrik GmbH"
-        UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}">
+        Version="$LFMP_VERSION"
+        Platform="x64"
+        UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}"/>
 
         <MediaTemplate EmbedCab="yes" />
 
-        <StandardDirectory Id="CommonAppDataFolder">
+        <StandardDirectory Id="ProgramFiles64Folder">
             <Directory Id="Icinga2Dir" Name="icinga2">
-                <Directory Id="UsrDir" Name="usr">
-                    <Directory Id="Lib64Dir" Name="lib64">
-                        <Directory Id="NagiosDir" Name="nagios">
-                            <Directory Id="PluginsDir" Name="plugins">
-                                <!-- Automatically includes all files from the specified directory -->
-                                <Files Include="$LFMP_DIR_COMPILED\check-plugins\**" />
-                                <Component Id="Icinga2ServiceControl" Guid="{7e398e63-b894-47d1-9375-eea744988032}">
-                                    <ServiceControl
-                                        Id="icinga2"
-                                        Name="icinga2"
-                                        Start="both"
-                                        Stop="both"
-                                        Wait="yes"/>
-                                </Component>
-                            </Directory>
-                        </Directory>
+                <Directory Id="SBinDir" Name="sbin">
+                    <Directory Id="LinuxfabrikDir" Name="linuxfabrik">
+                        <!-- Automatically includes all files from the specified directory -->
+                        <Files Include="$LFMP_DIR_COMPILED\check-plugins\**" />
+                        <Component Id="Icinga2ServiceControl" Guid="{7e398e63-b894-47d1-9375-eea744988032}">
+                            <ServiceControl
+                                Id="icinga2"
+                                Name="icinga2"
+                                Start="both"
+                                Stop="both"
+                                Wait="yes"/>
+                        </Component>
                     </Directory>
                 </Directory>
             </Directory>
