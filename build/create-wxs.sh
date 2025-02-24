@@ -6,18 +6,20 @@ set -e -x
 cat > "$LFMP_DIR_PACKAGED/in/lfmp.wxs" << EOF
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <Package
-        Name="Linuxfabrik Monitoring Plugins"
+        Codepage="1252"
+        InstallerVersion="301"
+        Language="1033"
         Manufacturer="Linuxfabrik GmbH"
-        Version="$LFMP_VERSION"
-        InstallerVersion="200"
-        Platform="x64"
-        UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}">
+        Name="Linuxfabrik Monitoring Plugins"
+        ProductCode="{7060a355-f73b-447d-aaa8-f4bf2db48032}"
+        UpgradeCode="{bb340ae1-12a5-41d3-a27f-8677df3b8032}"
+        Version="$LFMP_VERSION">
 
         <MediaTemplate EmbedCab="yes" />
 
         <StandardDirectory Id="ProgramFiles64Folder">
-            <Directory Id="Icinga2Dir" Name="icinga2">
-                <Directory Id="SBinDir" Name="sbin">
+            <Directory Id="INSTALL_ROOT" Name="ICINGA2">
+                <Directory Id="CM_DP_sbin" Name="sbin">
                     <Directory Id="LinuxfabrikDir" Name="linuxfabrik">
                         <!-- Automatically includes all files from the specified directory -->
                         <Files Include="$LFMP_DIR_COMPILED\check-plugins\**" />
